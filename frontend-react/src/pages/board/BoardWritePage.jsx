@@ -3,8 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { qnaBoardPath, qnaSolutionLabel, resolveQnaSolution } from '../../board/qnaSolutions'
 import PageHeader from '../../components/common/PageHeader'
 import { useAuth } from '../../hooks/useAuth'
+import { useBoardCommand } from '../../hooks/useBoardCommand'
 import { useBoardDetail } from '../../hooks/useBoardDetail'
-import { boardApi } from '../../services/api/boardApi'
 
 export default function BoardWritePage({ type, mode }) {
   const { id, solution: rawSolution } = useParams()
@@ -13,6 +13,7 @@ export default function BoardWritePage({ type, mode }) {
   const navigate = useNavigate()
   const isEdit = mode === 'edit'
   const { post } = useBoardDetail(isEdit ? type : null, isEdit ? id : null, solution)
+  const { write, update } = useBoardCommand(type, solution)
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [writer, setWriter] = useState('')
@@ -34,21 +35,17 @@ export default function BoardWritePage({ type, mode }) {
     event.preventDefault()
     setError('')
     try {
-      if (type === 'free') {
-        const payload = { title, content, writer: writer || 'guest', password }
-        if (isEdit) await boardApi.updateFree(id, payload)
-        else await boardApi.writeFree(payload)
-      } else if (type === 'qna') {
-        const payload = { title, content, solution }
-        if (isEdit) await boardApi.updateQna(id, payload)
-        else await boardApi.writeQna(payload)
-      } else {
+      if (type === 'archive') {
         const formData = new FormData()
         formData.append('title', title)
         formData.append('content', content)
         ;[...files].forEach((file) => formData.append('files', file))
-        if (isEdit) await boardApi.updateArchive(id, formData)
-        else await boardApi.writeArchive(formData)
+        if (isEdit) await update(id, formData)
+        else await write(formData)
+      } else {
+        const payload = type === 'free' ? { title, content, writer: writer || 'guest', password } : { title, content }
+        if (isEdit) await update(id, payload)
+        else await write(payload)
       }
       navigate(isEdit ? viewPath : listPath)
     } catch (err) {
@@ -63,7 +60,7 @@ export default function BoardWritePage({ type, mode }) {
   return (
     <>
       <PageHeader
-        kicker="Community"
+        kicker={type === 'free' ? 'Community · 비회원' : type === 'archive' ? 'Community · 회원' : 'Community'}
         title={type === 'qna' ? `${isEdit ? '글 수정' : '글쓰기'} · ${qnaSolutionLabel(solution)}` : isEdit ? '글 수정' : '글쓰기'}
       />
       <section id="content">

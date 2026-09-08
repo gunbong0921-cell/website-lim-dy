@@ -6,9 +6,9 @@ import { useAuth } from '../../hooks/useAuth'
 import { useBoardList } from '../../hooks/useBoardList'
 
 const meta = {
-  free: { title: '자유게시판', guest: true, writeHint: '비회원도 글을 쓸 수 있습니다.' },
+  free: { title: '자유게시판 (비회원)', guest: true, writeHint: '비회원제 게시판입니다. 로그인 없이 글을 쓸 수 있습니다.' },
   qna: { title: 'Q&A', guest: false, writeHint: '회원만 질문과 답변을 남길 수 있습니다.' },
-  archive: { title: '자료실', guest: false, writeHint: '첨부파일이 있는 기술 자료를 공유합니다.' },
+  archive: { title: '자료실 (회원)', guest: false, writeHint: '회원제 게시판입니다. 로그인 후 첨부파일을 공유할 수 있습니다.' },
 }
 
 export default function BoardListPage({ type }) {
@@ -51,14 +51,14 @@ function BoardListBody({ type, solution }) {
 
   return (
     <>
-      <PageHeader kicker="Community" title={title} />
+      <PageHeader kicker={type === 'free' ? 'Community · 비회원' : type === 'archive' ? 'Community · 회원' : 'Community'} title={title} />
       <div className="hx-board">
         <nav className="hx-tabs">
-          <NavLink to="/board/free">자유</NavLink>
+          <NavLink to="/board/free">자유 (비회원)</NavLink>
           <NavLink to="/board/qna/general" className={() => (qnaActive ? 'active' : undefined)}>
             Q&amp;A
           </NavLink>
-          <NavLink to="/board/archive">자료실</NavLink>
+          <NavLink to="/board/archive">자료실 (회원)</NavLink>
         </nav>
         {type === 'qna' && (
           <nav className="hx-tabs hx-tabs-sub">

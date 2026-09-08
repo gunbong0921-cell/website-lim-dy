@@ -7,33 +7,24 @@ import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.SecurityContextRepository;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+	private final SocialOAuthSuccessHandler socialOAuthSuccessHandler;
+	private final SocialOAuthFailureHandler socialOAuthFailureHandler;
 
 	@Bean
 	org.springframework.security.core.userdetails.UserDetailsService userDetailsService() {
 		return username -> {
 			throw new org.springframework.security.core.userdetails.UsernameNotFoundException(username);
 		};
-	}
-
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-
-	@Bean
-	SecurityContextRepository securityContextRepository() {
-		return new HttpSessionSecurityContextRepository();
 	}
 
 	@Bean
@@ -44,7 +35,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/api/members/me", "/api/members/profile", "/api/members/password").authenticated()
 				.requestMatchers(HttpMethod.POST, "/api/boards/qna", "/api/boards/archive", "/api/comments/**",
-					"/api/likes/**").authenticated()
+					"/api/boards/qna/*/like", "/api/boards/archive/*/like").authenticated()
 				.requestMatchers(HttpMethod.PUT, "/api/boards/qna/**", "/api/boards/archive/**", "/api/comments/**")
 					.authenticated()
 				.requestMatchers(HttpMethod.DELETE, "/api/boards/qna/**", "/api/boards/archive/**", "/api/comments/**")
@@ -53,6 +44,10 @@ public class SecurityConfig {
 			)
 			.formLogin(form -> form.disable())
 			.httpBasic(basic -> basic.disable())
+			.oauth2Login(oauth -> oauth
+				.successHandler(socialOAuthSuccessHandler)
+				.failureHandler(socialOAuthFailureHandler)
+			)
 			.logout(logout -> logout.disable())
 			.exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

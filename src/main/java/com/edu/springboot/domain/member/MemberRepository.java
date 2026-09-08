@@ -12,6 +12,8 @@ public interface MemberRepository {
 
 	Optional<Member> findByEmail(String email);
 
+	Optional<Member> findByOauthProviderAndOauthId(AuthProvider oauthProvider, String oauthId);
+
 	boolean existsByLoginId(String loginId);
 
 	boolean existsByEmail(String email);

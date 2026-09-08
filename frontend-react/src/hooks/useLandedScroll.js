@@ -10,7 +10,7 @@ export function useLandedScroll(pathname) {
       document.body.classList.add('is-touch')
     }
 
-    const mq = window.matchMedia('(min-width: 981px)')
+    const mq = window.matchMedia('(min-width: 737px)')
     const animated = () => document.querySelectorAll('.spotlight, .wrapper.fade-up, .wrapper.fade')
 
     const observer = new IntersectionObserver(

@@ -8,6 +8,7 @@ import BoardViewPage from './pages/board/BoardViewPage'
 import BoardWritePage from './pages/board/BoardWritePage'
 import HomePage from './pages/HomePage'
 import InsightsPage from './pages/InsightsPage'
+import FindIdPage from './pages/member/FindIdPage'
 import ForgotPasswordPage from './pages/member/ForgotPasswordPage'
 import LoginPage from './pages/member/LoginPage'
 import MyPage from './pages/member/MyPage'
@@ -44,6 +45,7 @@ export default function App() {
         <Route path="/insights" element={<InsightsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/forgot-id" element={<FindIdPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route
           path="/mypage"

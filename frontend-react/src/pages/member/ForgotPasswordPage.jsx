@@ -48,6 +48,8 @@ export default function ForgotPasswordPage() {
             </ul>
           </form>
           <p>
+            <Link to="/forgot-id">아이디 찾기</Link>
+            {' · '}
             <Link to="/login">로그인으로</Link>
           </p>
         </div>

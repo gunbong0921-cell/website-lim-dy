@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.edu.springboot.application.member.MemberProfileService;
 import com.edu.springboot.application.member.SignUpService;
+import com.edu.springboot.application.member.VerifyBusinessRegistrationService;
+import com.edu.springboot.application.member.dto.BusinessVerifyCommand;
+import com.edu.springboot.application.member.dto.BusinessVerifyResponse;
 import com.edu.springboot.application.member.dto.MemberResponse;
 import com.edu.springboot.application.member.dto.SignUpCommand;
 import com.edu.springboot.application.member.dto.SignUpResult;
@@ -26,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 
 	private final SignUpService signUpService;
+	private final VerifyBusinessRegistrationService verifyBusinessRegistrationService;
 	private final MemberProfileService memberProfileService;
 
 	@GetMapping("/check-id")
@@ -42,13 +46,19 @@ public class MemberController {
 			available ? "사용 가능한 이메일입니다." : "이미 등록된 이메일입니다.");
 	}
 
+	@PostMapping("/business/verify")
+	public ApiResponse<BusinessVerifyResponse> verifyBusiness(@RequestBody BusinessVerifyCommand command) {
+		BusinessVerifyResponse data = verifyBusinessRegistrationService.verify(command);
+		String status = data.statusName() == null || data.statusName().isBlank() ? "확인됨" : data.statusName();
+		String tax = data.taxType() == null || data.taxType().isBlank() ? "" : " · " + data.taxType();
+		return ApiResponse.ok(data, "국세청 확인: " + status + tax);
+	}
+
 	@PostMapping("/signup")
 	public ApiResponse<SignUpResult> signUp(@RequestBody SignUpCommand command) {
 		SignUpResult result = signUpService.signUp(command);
-		String message = result.mailSent()
-			? "인증 코드를 이메일로 보냈습니다."
-			: "메일을 보내지 못했습니다. 화면에 표시된 인증 코드로 인증하세요.";
-		return ApiResponse.ok(result, message);
+		String kind = "PHONE".equals(result.verificationChannel()) ? "휴대폰" : "이메일";
+		return ApiResponse.ok(result, kind + " 인증이 완료된 계정으로 가입되었습니다. 로그인하세요.");
 	}
 
 	@PostMapping("/resend-verification")
@@ -73,7 +83,15 @@ public class MemberController {
 	@PutMapping("/profile")
 	public ApiResponse<MemberResponse> update(Authentication authentication, @RequestBody ProfileRequest request) {
 		return ApiResponse.ok(
-			memberProfileService.update(authentication.getName(), request.name(), request.phone(), request.company()),
+			memberProfileService.update(
+				authentication.getName(),
+				request.name(),
+				request.phone(),
+				request.company(),
+				request.address(),
+				request.jobTitle(),
+				request.workplaceAddress()
+			),
 			"회원정보가 수정되었습니다."
 		);
 	}
@@ -84,7 +102,8 @@ public class MemberController {
 		return ApiResponse.ok(null, "비밀번호가 변경되었습니다.");
 	}
 
-	public record ProfileRequest(String name, String phone, String company) {
+	public record ProfileRequest(String name, String phone, String company, String address, String jobTitle,
+		String workplaceAddress) {
 	}
 
 	public record PasswordRequest(String currentPassword, String newPassword) {

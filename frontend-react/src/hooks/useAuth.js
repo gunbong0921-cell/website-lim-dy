@@ -35,7 +35,18 @@ export function useAuth() {
   }, [setMember])
 
   const changePassword = useCallback((payload) => memberApi.changePassword(payload), [])
+  const findLoginId = useCallback((email) => memberApi.findLoginId(email), [])
   const forgotPassword = useCallback((email) => memberApi.forgotPassword(email), [])
 
-  return { member, ready, bootstrap, login, logout, updateProfile, changePassword, forgotPassword }
+  return {
+    member,
+    ready,
+    bootstrap,
+    login,
+    logout,
+    updateProfile,
+    changePassword,
+    findLoginId,
+    forgotPassword,
+  }
 }

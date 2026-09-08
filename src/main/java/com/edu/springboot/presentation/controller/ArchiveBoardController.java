@@ -57,10 +57,10 @@ public class ArchiveBoardController {
 		BoardDetailResponse detail = archiveBoardService.read(id, viewed);
 		var body = ApiResponse.ok(detail);
 		if (!viewed && detail.visitIncreased()) {
-			ResponseCookie cookie = ResponseCookie.from(cookieName, "Y")
-				.path("/")
-				.maxAge(viewCountPolicy.cookieMaxAgeSeconds(LocalDateTime.now()))
-				.build();
+			ResponseCookie cookie = CookieSupport.viewedToday(
+				cookieName,
+				viewCountPolicy.cookieMaxAgeSeconds(LocalDateTime.now())
+			);
 			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(body);
 		}
 		return ResponseEntity.ok(body);
@@ -97,7 +97,8 @@ public class ArchiveBoardController {
 
 	@PostMapping("/{id}/like")
 	public ApiResponse<Integer> like(@PathVariable("id") Long id, Authentication authentication) {
-		return ApiResponse.ok(likeService.like("ARCHIVE", id, authentication.getName()));
+		return ApiResponse.ok(likeService.like("ARCHIVE", id, AuthSupport.loginId(authentication), false).count(),
+			"좋아요가 반영되었습니다.");
 	}
 
 	private List<UploadFile> toUploads(List<MultipartFile> files) {

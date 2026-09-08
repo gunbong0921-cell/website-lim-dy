@@ -3,9 +3,11 @@ package com.edu.springboot.application.board;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.edu.springboot.application.board.dto.LikeResult;
 import com.edu.springboot.application.common.BusinessException;
 import com.edu.springboot.domain.board.ArchiveBoardRepository;
 import com.edu.springboot.domain.board.FreeBoardRepository;
+import com.edu.springboot.domain.board.LikePolicy;
 import com.edu.springboot.domain.board.LikeRepository;
 import com.edu.springboot.domain.board.QnaBoardRepository;
 
@@ -16,20 +18,32 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class LikeService {
 
+	private final LikePolicy likePolicy;
 	private final LikeRepository likeRepository;
 	private final FreeBoardRepository freeBoardRepository;
 	private final QnaBoardRepository qnaBoardRepository;
 	private final ArchiveBoardRepository archiveBoardRepository;
 
-	public int like(String boardType, Long boardId, String loginId) {
-		if (loginId == null || loginId.isBlank()) {
+	public LikeResult like(String boardType, Long boardId, String loginId, boolean alreadyLikedByCookie) {
+		String type = boardType == null ? "" : boardType.toUpperCase();
+		boolean guest = loginId == null || loginId.isBlank();
+		if (guest && !likePolicy.allowsGuest(type)) {
 			throw new BusinessException("로그인 후 좋아요를 누를 수 있습니다.");
 		}
-		String type = boardType.toUpperCase();
+		if (guest) {
+			if (alreadyLikedByCookie) {
+				throw new BusinessException("이미 좋아요를 눌렀습니다.");
+			}
+			return new LikeResult(increase(type, boardId), true);
+		}
 		if (likeRepository.exists(type, boardId, loginId)) {
 			throw new BusinessException("이미 좋아요를 눌렀습니다.");
 		}
 		likeRepository.insert(type, boardId, loginId);
+		return new LikeResult(increase(type, boardId), false);
+	}
+
+	private int increase(String type, Long boardId) {
 		return switch (type) {
 			case "FREE" -> {
 				freeBoardRepository.increaseLikeCount(boardId);

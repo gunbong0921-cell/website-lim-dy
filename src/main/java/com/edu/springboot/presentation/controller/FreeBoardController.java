@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +20,9 @@ import com.edu.springboot.application.board.FreeBoardService;
 import com.edu.springboot.application.board.LikeService;
 import com.edu.springboot.application.board.dto.BoardDetailResponse;
 import com.edu.springboot.application.board.dto.BoardSummaryResponse;
+import com.edu.springboot.application.board.dto.LikeResult;
 import com.edu.springboot.application.common.PageResponse;
+import com.edu.springboot.domain.board.LikePolicy;
 import com.edu.springboot.domain.board.ViewCountPolicy;
 import com.edu.springboot.presentation.dto.ApiResponse;
 
@@ -35,6 +36,7 @@ public class FreeBoardController {
 	private final FreeBoardService freeBoardService;
 	private final LikeService likeService;
 	private final ViewCountPolicy viewCountPolicy;
+	private final LikePolicy likePolicy;
 
 	@GetMapping
 	public ApiResponse<PageResponse<BoardSummaryResponse>> list(
@@ -52,15 +54,14 @@ public class FreeBoardController {
 		jakarta.servlet.http.HttpServletRequest request
 	) {
 		String cookieName = viewCountPolicy.cookieName("FREE", id);
-		boolean viewed = hasCookie(request, cookieName);
+		boolean viewed = CookieSupport.has(request, cookieName);
 		BoardDetailResponse detail = freeBoardService.read(id, viewed);
 		var body = ApiResponse.ok(detail);
 		if (!viewed && detail.visitIncreased()) {
-			ResponseCookie cookie = ResponseCookie.from(cookieName, "Y")
-				.path("/")
-				.maxAge(viewCountPolicy.cookieMaxAgeSeconds(LocalDateTime.now()))
-				.httpOnly(false)
-				.build();
+			ResponseCookie cookie = CookieSupport.viewedToday(
+				cookieName,
+				viewCountPolicy.cookieMaxAgeSeconds(LocalDateTime.now())
+			);
 			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(body);
 		}
 		return ResponseEntity.ok(body);
@@ -85,23 +86,21 @@ public class FreeBoardController {
 	}
 
 	@PostMapping("/{id}/like")
-	public ApiResponse<Integer> like(@PathVariable("id") Long id, Authentication authentication) {
-		String loginId = (authentication == null || authentication instanceof AnonymousAuthenticationToken)
-			? null
-			: authentication.getName();
-		return ApiResponse.ok(likeService.like("FREE", id, loginId), "좋아요가 반영되었습니다.");
-	}
-
-	private boolean hasCookie(jakarta.servlet.http.HttpServletRequest request, String name) {
-		if (request.getCookies() == null) {
-			return false;
+	public ResponseEntity<ApiResponse<Integer>> like(
+		@PathVariable("id") Long id,
+		Authentication authentication,
+		jakarta.servlet.http.HttpServletRequest request
+	) {
+		String loginId = AuthSupport.loginId(authentication);
+		String cookieName = likePolicy.cookieName("FREE", id);
+		boolean alreadyLiked = CookieSupport.has(request, cookieName);
+		LikeResult result = likeService.like("FREE", id, loginId, alreadyLiked);
+		var body = ApiResponse.ok(result.count(), "좋아요가 반영되었습니다.");
+		if (result.setGuestCookie()) {
+			ResponseCookie cookie = CookieSupport.viewedToday(cookieName, likePolicy.cookieMaxAgeSeconds());
+			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(body);
 		}
-		for (var cookie : request.getCookies()) {
-			if (name.equals(cookie.getName())) {
-				return true;
-			}
-		}
-		return false;
+		return ResponseEntity.ok(body);
 	}
 
 	public record FreeWriteRequest(String title, String content, String writer, String password) {

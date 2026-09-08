@@ -22,7 +22,7 @@ export default function Footer() {
         </li>
         <li>
           <Link to="/board/archive" className="icon solid alt fa-file">
-            <span className="label">자료실</span>
+            <span className="label">자료실 (회원)</span>
           </Link>
         </li>
         <li>

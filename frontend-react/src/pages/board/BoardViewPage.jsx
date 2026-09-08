@@ -4,10 +4,10 @@ import { qnaBoardPath, qnaSolutionLabel, resolveQnaSolution } from '../../board/
 import FileViewer from '../../components/board/FileViewer'
 import PageHeader from '../../components/common/PageHeader'
 import { useAuth } from '../../hooks/useAuth'
+import { useBoardCommand } from '../../hooks/useBoardCommand'
 import { useBoardDetail } from '../../hooks/useBoardDetail'
 import { useComment } from '../../hooks/useComment'
 import { useLike } from '../../hooks/useLike'
-import { boardApi } from '../../services/api/boardApi'
 
 export default function BoardViewPage({ type }) {
   const { id, solution: rawSolution } = useParams()
@@ -15,8 +15,9 @@ export default function BoardViewPage({ type }) {
   const { member } = useAuth()
   const navigate = useNavigate()
   const { post, loading, error } = useBoardDetail(type, id, solution)
+  const { remove } = useBoardCommand(type)
   const { count, message, like, setCount } = useLike(type, id, post?.likeCount || 0)
-  const { comments, write, update, remove } = useComment(type === 'qna' ? id : null)
+  const { comments, write, update, remove: removeComment } = useComment(type === 'qna' ? id : null)
   const [password, setPassword] = useState('')
   const [commentText, setCommentText] = useState('')
   const [editingId, setEditingId] = useState(null)
@@ -32,13 +33,7 @@ export default function BoardViewPage({ type }) {
   async function onDelete() {
     setActionError('')
     try {
-      if (type === 'free') {
-        await boardApi.deleteFree(id, password)
-      } else if (type === 'qna') {
-        await boardApi.deleteQna(id)
-      } else {
-        await boardApi.deleteArchive(id)
-      }
+      await remove(id, password)
       navigate(listPath)
     } catch (err) {
       setActionError(err.message)
@@ -60,7 +55,15 @@ export default function BoardViewPage({ type }) {
   return (
     <>
       <PageHeader
-        kicker={type === 'qna' ? `Q&A · ${qnaSolutionLabel(solution)}` : 'Community'}
+        kicker={
+          type === 'qna'
+            ? `Q&A · ${qnaSolutionLabel(solution)}`
+            : type === 'free'
+              ? 'Community · 비회원'
+              : type === 'archive'
+                ? 'Community · 회원'
+                : 'Community'
+        }
         title={post.title}
       />
       <article className="hx-article">
@@ -73,9 +76,15 @@ export default function BoardViewPage({ type }) {
         <div className="hx-article-body">{post.content}</div>
         {type === 'archive' && <FileViewer files={post.files} />}
         <div className="hx-article-actions">
-          <button type="button" className="button primary" onClick={() => like()}>
-            좋아요 {count}
-          </button>
+          {member || type === 'free' ? (
+            <button type="button" className="button primary" onClick={() => like()}>
+              좋아요 {count}
+            </button>
+          ) : (
+            <Link className="button primary" to="/login">
+              로그인 후 좋아요 {count}
+            </Link>
+          )}
           {canEdit && (
             <>
               {type === 'free' && (
@@ -139,7 +148,7 @@ export default function BoardViewPage({ type }) {
                       </button>
                     </li>
                     <li>
-                      <button type="button" className="button small" onClick={() => remove(item.id)}>
+                      <button type="button" className="button small" onClick={() => removeComment(item.id)}>
                         삭제
                       </button>
                     </li>

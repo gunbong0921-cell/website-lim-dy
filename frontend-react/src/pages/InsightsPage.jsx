@@ -24,7 +24,7 @@ export default function InsightsPage() {
     <>
       <PageHeader
         eyebrow="Tech Notes(기술노트)"
-        title="서비스 나열을 넘어, Hexaq가 기술을 선택하고 제품을 완성하는 기준"
+        title="단순한 기술 나열을 넘어, Hexaq가 제품을 정의하고 아키텍처를 선택하는 기준"
       />
       <section id="content">
         <span className="image fit hx-motion">

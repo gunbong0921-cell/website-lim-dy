@@ -31,7 +31,7 @@ export default function FileViewer({ files = [] }) {
   return (
     <div className="file-viewer">
       {files.map((file) => {
-        const type = getFileType(file.originalName)
+        const type = getFileType(file.originalName, file.fileType)
         const render = strategies[type] || strategies.download
         return render(file)
       })}

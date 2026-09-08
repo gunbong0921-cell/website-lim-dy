@@ -14,6 +14,7 @@ public class SpaController {
 		"/signup",
 		"/mypage",
 		"/forgot-password",
+		"/forgot-id",
 		"/board/free",
 		"/board/free/**",
 		"/board/qna",

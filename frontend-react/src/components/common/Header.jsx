@@ -35,11 +35,18 @@ export default function Header() {
     setCommunityOpen((value) => !value)
   }
 
+  function goHome(event) {
+    event.preventDefault()
+    closeAll()
+    navigate('/')
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }
+
   return (
     <>
       <header id="header">
         <h1 id="logo">
-          <NavLink to="/" onClick={closeAll} aria-label="HEXAQ 홈">
+          <NavLink to="/" end onClick={goHome} aria-label="HEXAQ 홈">
             <BrandLogo />
           </NavLink>
         </h1>
@@ -67,7 +74,7 @@ export default function Header() {
               <ul className="dropotron level-0">
                 <li>
                   <NavLink to="/board/free" onClick={closeAll}>
-                    자유게시판
+                    자유게시판 (비회원)
                   </NavLink>
                 </li>
                 <li>
@@ -77,7 +84,7 @@ export default function Header() {
                 </li>
                 <li>
                   <NavLink to="/board/archive" onClick={closeAll}>
-                    자료실
+                    자료실 (회원)
                   </NavLink>
                 </li>
               </ul>
@@ -86,7 +93,7 @@ export default function Header() {
               <>
                 <li>
                   <NavLink to="/mypage" onClick={closeAll}>
-                    {member.name}
+                    {member.role === 'ADMIN' ? `${member.name} (관리자)` : member.name}
                   </NavLink>
                 </li>
                 <li>
@@ -124,7 +131,7 @@ export default function Header() {
           <div id="titleBar">
             <button type="button" className="toggle" aria-label="메뉴" onClick={togglePanel} />
             <span className="title">
-              <NavLink to="/" onClick={closeAll} aria-label="HEXAQ 홈">
+              <NavLink to="/" end onClick={goHome} aria-label="HEXAQ 홈">
                 <BrandLogo />
               </NavLink>
             </span>
@@ -143,7 +150,7 @@ export default function Header() {
               <span className="link depth-0">커뮤니티</span>
               <NavLink to="/board/free" className="link depth-1" onClick={closeAll}>
                 <span className="indent-1" />
-                자유게시판
+                자유게시판 (비회원)
               </NavLink>
               <NavLink to="/board/qna" className="link depth-1" onClick={closeAll}>
                 <span className="indent-1" />
@@ -151,12 +158,12 @@ export default function Header() {
               </NavLink>
               <NavLink to="/board/archive" className="link depth-1" onClick={closeAll}>
                 <span className="indent-1" />
-                자료실
+                자료실 (회원)
               </NavLink>
               {member ? (
                 <>
                   <NavLink to="/mypage" className="link depth-0" onClick={closeAll}>
-                    {member.name}
+                    {member.role === 'ADMIN' ? `${member.name} (관리자)` : member.name}
                   </NavLink>
                   <a
                     href="#logout"

@@ -1,21 +1,18 @@
 package com.edu.springboot.presentation.controller;
 
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.edu.springboot.application.auth.FindLoginIdService;
 import com.edu.springboot.application.auth.PasswordResetService;
 import com.edu.springboot.application.member.LoginService;
 import com.edu.springboot.application.member.dto.MemberResponse;
+import com.edu.springboot.infrastructure.security.MemberSessionBinder;
 import com.edu.springboot.presentation.dto.ApiResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,21 +27,14 @@ public class AuthController {
 
 	private final LoginService loginService;
 	private final PasswordResetService passwordResetService;
-	private final SecurityContextRepository securityContextRepository;
+	private final FindLoginIdService findLoginIdService;
+	private final MemberSessionBinder memberSessionBinder;
 
 	@PostMapping("/login")
 	public ApiResponse<MemberResponse> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest,
 		HttpServletResponse httpResponse) {
 		MemberResponse member = loginService.authenticate(request.loginId(), request.password());
-		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-			member.loginId(),
-			null,
-			List.of(new SimpleGrantedAuthority("ROLE_USER"))
-		);
-		SecurityContext context = SecurityContextHolder.createEmptyContext();
-		context.setAuthentication(authentication);
-		SecurityContextHolder.setContext(context);
-		securityContextRepository.saveContext(context, httpRequest, httpResponse);
+		memberSessionBinder.bind(httpRequest, httpResponse, member);
 		return ApiResponse.ok(member, "로그인되었습니다.");
 	}
 
@@ -56,6 +46,16 @@ public class AuthController {
 			session.invalidate();
 		}
 		return ApiResponse.ok(null, "로그아웃되었습니다.");
+	}
+
+	@PostMapping("/forgot-id")
+	public ApiResponse<Map<String, String>> forgotId(@RequestBody Map<String, String> body) {
+		var result = findLoginIdService.sendLoginId(body.get("email"));
+		if (result.mailSent()) {
+			return ApiResponse.ok(Map.of(), "가입하신 아이디를 이메일로 보냈습니다.");
+		}
+		return ApiResponse.ok(Map.of("debugLoginId", result.debugLoginId()),
+			"메일을 보내지 못했습니다. 아이디를 확인하세요.");
 	}
 
 	@PostMapping("/forgot-password")

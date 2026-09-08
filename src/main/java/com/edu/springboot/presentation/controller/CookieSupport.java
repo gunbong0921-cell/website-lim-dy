@@ -1,5 +1,7 @@
 package com.edu.springboot.presentation.controller;
 
+import org.springframework.http.ResponseCookie;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -19,5 +21,13 @@ final class CookieSupport {
 			}
 		}
 		return false;
+	}
+
+	static ResponseCookie viewedToday(String name, int maxAgeSeconds) {
+		return ResponseCookie.from(name, "Y")
+			.path("/")
+			.maxAge(maxAgeSeconds)
+			.sameSite("Lax")
+			.build();
 	}
 }

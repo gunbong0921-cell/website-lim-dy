@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
+import com.edu.springboot.domain.member.AuthProvider;
 import com.edu.springboot.domain.member.Member;
 import com.edu.springboot.domain.member.MemberRepository;
 
@@ -33,6 +34,11 @@ public class MemberRepositoryImpl implements MemberRepository {
 	@Override
 	public Optional<Member> findByEmail(String email) {
 		return jpa.findByEmail(email);
+	}
+
+	@Override
+	public Optional<Member> findByOauthProviderAndOauthId(AuthProvider oauthProvider, String oauthId) {
+		return jpa.findByOauthProviderAndOauthId(oauthProvider, oauthId);
 	}
 
 	@Override
