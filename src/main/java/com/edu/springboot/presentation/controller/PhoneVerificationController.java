@@ -9,6 +9,7 @@ import com.edu.springboot.application.member.SendPhoneVerificationService;
 import com.edu.springboot.application.member.VerifyPhoneCodeService;
 import com.edu.springboot.application.member.dto.SendPhoneVerificationResult;
 import com.edu.springboot.application.member.dto.VerifyPhoneCodeResult;
+import com.edu.springboot.infrastructure.security.ClientIpResolver;
 import com.edu.springboot.presentation.dto.ApiResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,11 +22,13 @@ public class PhoneVerificationController {
 
 	private final SendPhoneVerificationService sendPhoneVerificationService;
 	private final VerifyPhoneCodeService verifyPhoneCodeService;
+	private final ClientIpResolver clientIpResolver;
 
 	@PostMapping("/send-code")
 	public ApiResponse<SendPhoneVerificationResult> sendCode(@RequestBody PhoneRequest request,
 		HttpServletRequest httpRequest) {
-		SendPhoneVerificationResult data = sendPhoneVerificationService.send(request.phone(), clientIp(httpRequest));
+		SendPhoneVerificationResult data = sendPhoneVerificationService.send(request.phone(),
+			clientIpResolver.resolve(httpRequest));
 		return ApiResponse.ok(data, "인증번호를 발송했습니다. 3분 안에 입력해 주세요.");
 	}
 
@@ -33,18 +36,6 @@ public class PhoneVerificationController {
 	public ApiResponse<VerifyPhoneCodeResult> verify(@RequestBody PhoneVerifyRequest request) {
 		VerifyPhoneCodeResult data = verifyPhoneCodeService.verify(request.phone(), request.code());
 		return ApiResponse.ok(data, "휴대폰 인증이 완료되었습니다.");
-	}
-
-	private String clientIp(HttpServletRequest request) {
-		String forwarded = request.getHeader("X-Forwarded-For");
-		if (forwarded != null && !forwarded.isBlank()) {
-			return forwarded.split(",")[0].trim();
-		}
-		String realIp = request.getHeader("X-Real-IP");
-		if (realIp != null && !realIp.isBlank()) {
-			return realIp.trim();
-		}
-		return request.getRemoteAddr() == null ? "unknown" : request.getRemoteAddr();
 	}
 
 	public record PhoneRequest(String phone) {

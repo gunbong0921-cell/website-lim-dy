@@ -32,6 +32,10 @@ public class SecurityConfig {
 		http
 			.csrf(csrf -> csrf.disable())
 			.cors(Customizer.withDefaults())
+			.headers(headers -> headers
+				.contentTypeOptions(Customizer.withDefaults())
+				.frameOptions(frame -> frame.deny())
+			)
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/api/members/me", "/api/members/profile", "/api/members/password").authenticated()
 				.requestMatchers(HttpMethod.POST, "/api/boards/qna", "/api/boards/archive", "/api/comments/**",

@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.edu.springboot.application.common.BusinessException;
 import com.edu.springboot.presentation.dto.ApiResponse;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -18,7 +21,8 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ApiResponse<Void>> handleOther(Exception ex) {
+		log.error("Unhandled error", ex);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-			.body(ApiResponse.fail(ex.getMessage() != null ? ex.getMessage() : "서버 오류가 발생했습니다."));
+			.body(ApiResponse.fail("서버 오류가 발생했습니다."));
 	}
 }

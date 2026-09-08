@@ -71,6 +71,7 @@ store/authStore.js  ← 로그인 사용자만 (zustand)
 |---|---|---|---|
 | 높음 | Infrastructure는 Domain만 | `SocialOAuthSuccessHandler`, `MemberSessionBinder`, `KakaoFriendsClient`, `AdminAccountInitializer` | Application 서비스·DTO를 직접 호출/사용 |
 | 높음 | Presentation은 Application만 | `AuthController` | Infrastructure `MemberSessionBinder` 주입, `SecurityContextHolder.clearContext()` |
+| 높음 | Presentation은 Application만 | `EmailVerificationController`, `PhoneVerificationController` | Infrastructure `ClientIpResolver` 주입 |
 | 높음 | Presentation에 도메인 규칙 금지 | `FreeBoardController`, `QnaBoardController`, `ArchiveBoardController` | `ViewCountPolicy`, `LikePolicy`를 컨트롤러가 직접 사용 (쿠키 이름·만료) |
 | 중간 | OCP | `LikeService.increase()` | `"FREE"/"QNA"/"ARCHIVE"` switch. 게시판 추가 시 이 클래스 수정 |
 | 중간 | 이름 통일 | 이메일 인증 | `SendPhoneVerificationResult`, `VerifyPhoneCodeResult`, `PhoneVerificationStore`를 이메일이 재사용. 토큰 필드명도 `phone` |
@@ -139,19 +140,23 @@ store/authStore.js  ← 로그인 사용자만 (zustand)
 | `NtsOpendataBusinessRegistrationGateway` | `BusinessRegistrationGateway` |
 | `BcryptPasswordEncryptor` | `PasswordEncryptor` |
 | `KakaoTalkMemoClient` | `KakaoTalkGateway` |
-| `SecurityConfig` + OAuth 핸들러 | 세션·소셜 로그인 (이 계층에만 둘 것) |
+| `SecurityConfig` + OAuth 핸들러 | 세션·소셜 로그인, 클릭재킹 방지 헤더 (이 계층에만 둘 것) |
+| `WebCorsConfig` | `CORS_ALLOWED_ORIGINS`만 허용 |
+| `RateLimitFilter` | IP별 반복 요청 제한. 정적 파일은 통과 |
+| `ClientIpResolver` | `TRUSTED_PROXY`일 때만 `X-Forwarded-For` |
 
 도메인 정책 빈은 `DomainBeanConfig`에서 생성한다. `ViewCountPolicy`, `LikePolicy`, `PasswordPolicy`, `PhoneVerificationPolicy`, `FileTypeClassifier`.
 
 ### 3.4 Presentation — HTTP 입구
 
 - JSON 성공/실패: `ApiResponse`
-- 예외 → 메시지: `GlobalExceptionHandler`
+- 예외 → 메시지: `GlobalExceptionHandler` (알 수 없는 예외는 상세를 숨김)
 - 회원: `MemberController`, `EmailVerificationController`, `PhoneVerificationController`
 - 인증: `AuthController`
 - 게시판: `FreeBoardController`, `QnaBoardController`, `ArchiveBoardController`
 - 댓글/파일: `CommentController`, `FileController`
 - SPA: `SpaController` (React 정적 파일)
+- IP: 인증번호 발송 시 `ClientIpResolver` (Infrastructure)
 
 ---
 
@@ -168,8 +173,10 @@ SignUpPage
   ├ useEmailVerification    또는  usePhoneVerification
   └ useSignUp.signUp
         ↓
-EmailVerificationController  |  PhoneVerificationController
+RateLimitFilter (로그인·인증 한도)
         ↓
+EmailVerificationController  |  PhoneVerificationController
+        ↓ ClientIpResolver
 Send*VerificationService → Policy + Store + MailSender/SmsSender
 Verify*CodeService       → 일회용 토큰
         ↓
@@ -307,6 +314,37 @@ FileViewer.strategies[type]     image / video / audio / download 맵
 
 다운로드: `GET /api/files/{id}` → `FileDownloadService` → 바이너리 응답.
 
+### 4.9 설정 · 요청 제한
+
+홈페이지 접속은 열어 둔다. 비밀값은 Git에 올리지 않고, API 남용·디도스성 반복 요청만 끊는다.
+
+```
+브라우저
+  → RateLimitFilter     정적 파일 제외, IP+경로 버킷
+  → SecurityConfig      CORS · 보안 헤더
+  → Controller
+```
+
+| 구분 | 내용 |
+|---|---|
+| 비밀값 | `.env` (gitignore). 키 이름만 `.env.example` |
+| 로드 | `application.properties` → `spring.config.import=optional:file:.env[.properties]` |
+| 참조 | `application.properties`는 `${DB_PASSWORD}`처럼 환경 변수만. 기본값에 비밀 없음 |
+| CORS | `WebCorsConfig` ← `CORS_ALLOWED_ORIGINS` |
+| IP | `ClientIpResolver`. 기본은 `remoteAddr`. 리버스 프록시 뒤에서만 `TRUSTED_PROXY=true` |
+| 한도 초과 | `429` + `{ success: false, data: null, message: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요." }` |
+
+한도 (기본, IP당 1분):
+
+| 대상 | 횟수 | `.env` |
+|---|---|---|
+| SPA 페이지 | 300 | `RATE_LIMIT_PAGE` |
+| `/api/**` | 60 | `RATE_LIMIT_API` |
+| 로그인·가입·인증번호·OAuth | 10 | `RATE_LIMIT_AUTH` |
+| `/assets/**`, JS·CSS·이미지 | 제한 없음 | — |
+
+운영은 `application-prod.properties`에 실제 도메인 CORS를 넣고, 프록시 뒤에서만 `TRUSTED_PROXY=true`로 둔다. 회선 포화형 디도스는 앱 한도로 막을 수 없고 CDN/WAF가 필요하다.
+
 ---
 
 ## 5. 프론트 객체 연결
@@ -337,7 +375,7 @@ utils/          getFileType, memberForm, passwordPolicy
 
 1. 사용자가 **휴대폰 인증** 탭을 고른다. `SignUpVerifyTabs` → `form.verificationChannel = 'PHONE'`
 2. `usePhoneVerification.send` → `POST /api/members/phone/send-code`
-3. `PhoneVerificationController` → `SendPhoneVerificationService`
+3. `RateLimitFilter`가 IP 한도를 본다. 통과하면 `PhoneVerificationController` → `ClientIpResolver` → `SendPhoneVerificationService`
 4. `PhoneVerificationPolicy`가 번호·쿨다운·일일 한도를 검사하고 6자리 코드를 만든다
 5. `SolapiSmsSender`가 문자를 보낸다. `RedisPhoneVerificationStore`가 TTL과 함께 저장한다
 6. 사용자가 코드를 입력. `verify` → `VerifyPhoneCodeService` → 일회용 토큰
@@ -364,6 +402,8 @@ Spring이 인터페이스에 구현을 꽂는다. Application 코드에 `new Red
 
 회원은 JPA, 게시판은 MyBatis다. Domain은 둘 다 모른다.
 
+DB·메일·OAuth·SMS 키는 `.env`에서 읽고, Application/Domain은 파일 경로를 모른다.
+
 ---
 
 ## 8. 나중에 손보면 좋은 순서
@@ -372,7 +412,8 @@ Spring이 인터페이스에 구현을 꽂는다. Application 코드에 `new Red
 
 1. 세션 바인딩·OAuth 성공 처리를 Application 포트 뒤로 옮긴다. Infrastructure가 Application DTO를 직접 쓰지 않게 한다.
 2. 조회수·게스트 좋아요 쿠키 판단을 컨트롤러에서 Application(또는 Presentation 어댑터)으로 옮긴다.
-3. 이메일/휴대폰 공통 이름을 `VerificationStore`, `SendVerificationResult`처럼 채널 중립으로 바꾼다.
-4. `LikeService`의 게시판 switch를 전략(게시판별 카운트 증가 포트)으로 바꾼다.
+3. `ClientIpResolver`를 Presentation 쪽으로 옮기거나 포트를 둔다. 인증 컨트롤러가 Infrastructure를 직접 보지 않게 한다.
+4. 이메일/휴대폰 공통 이름을 `VerificationStore`, `SendVerificationResult`처럼 채널 중립으로 바꾼다.
+5. `LikeService`의 게시판 switch를 전략(게시판별 카운트 증가 포트)으로 바꾼다.
 
 프론트는 fetch 격리를 이미 지킨다. 남는 것은 `SignUpPage` 로직을 훅으로 더 내리는 일과, 규칙에 적힌 `useViewCount`를 둘지 여부다.

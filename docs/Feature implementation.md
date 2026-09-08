@@ -75,7 +75,7 @@ pages → hooks → services/api → 서버
 | 훅 | `useAuth.login` |
 | API | `POST /api/auth/login` · `/logout` |
 | 유스케이스 | `LoginService` |
-| 보안 | `MemberSessionBinder` · BCrypt |
+| 보안 | `MemberSessionBinder` · BCrypt · `RateLimitFilter`(로그인 분당 10회) |
 
 로그인 조건: **이메일 인증 완료 또는 휴대폰 인증 완료**
 
@@ -185,6 +185,29 @@ useComment → /api/comments
 
 ---
 
+## 10. 설정 · 공격 대비
+
+**구현:** 사이트는 열어 두고, 비밀값은 `.env`로 빼며, 반복 요청만 끊는다.
+
+| 구분 | 내용 |
+|---|---|
+| 비밀값 | `.env` (Git 제외). 템플릿 `.env.example` |
+| 설정 | `application.properties`는 `${환경변수}`만 참조 |
+| CORS | `WebCorsConfig` ← `CORS_ALLOWED_ORIGINS` |
+| IP | `ClientIpResolver`. 프록시 뒤에서만 `TRUSTED_PROXY=true` |
+| 필터 | `RateLimitFilter` (정적 파일 제외) |
+
+| 대상 | 분당 IP 한도 |
+|---|---|
+| 페이지 방문 | 300 |
+| 일반 API | 60 |
+| 로그인·가입·인증번호 | 10 |
+| JS / CSS / 이미지 | 제한 없음 |
+
+한도 초과 시 `429`와 `"요청이 너무 많습니다."`만 반환한다.
+
+---
+
 ## 교체 가능한 구현 (DIP)
 
 Application은 인터페이스만 본다. 구현은 설정의 문제다.
@@ -198,6 +221,7 @@ Application은 인터페이스만 본다. 구현은 설정의 문제다.
 | 메일 | `MailSender` | SMTP |
 | 파일 | `FileStorage` | 로컬 디스크 |
 | 사업자 | `BusinessRegistrationGateway` | 국세청 |
+| 비밀값 | 환경 변수 | `.env` → `application.properties` |
 
 ---
 
@@ -207,3 +231,4 @@ Application은 인터페이스만 본다. 구현은 설정의 문제다.
 - **도메인**에 규칙, **애플리케이션**에 트랜잭션, **인프라**에 Spring·DB·외부 API
 - 인증·메일·SMS·파일·사업자 확인은 **포트에 구현을 꽂는** 방식
 - 게시판·댓글은 **역할이 다른 서비스를 억지로 합치지 않음**
+- 비밀값은 **`.env`**, 홈페이지는 열어 두고 **반복 요청만** `RateLimitFilter`로 제한
