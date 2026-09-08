@@ -27,24 +27,24 @@ public class CommentController {
 	private final CommentService commentService;
 
 	@GetMapping("/{boardId}")
-	public ApiResponse<List<CommentResponse>> list(@PathVariable Long boardId) {
+	public ApiResponse<List<CommentResponse>> list(@PathVariable("boardId") Long boardId) {
 		return ApiResponse.ok(commentService.list(boardId));
 	}
 
 	@PostMapping("/{boardId}")
-	public ApiResponse<CommentResponse> write(@PathVariable Long boardId, Authentication authentication,
+	public ApiResponse<CommentResponse> write(@PathVariable("boardId") Long boardId, Authentication authentication,
 		@RequestBody Map<String, String> body) {
 		return ApiResponse.ok(commentService.write(boardId, authentication.getName(), body.get("content")), "댓글이 등록되었습니다.");
 	}
 
 	@PutMapping("/item/{commentId}")
-	public ApiResponse<CommentResponse> update(@PathVariable Long commentId, Authentication authentication,
+	public ApiResponse<CommentResponse> update(@PathVariable("commentId") Long commentId, Authentication authentication,
 		@RequestBody Map<String, String> body) {
 		return ApiResponse.ok(commentService.update(commentId, authentication.getName(), body.get("content")), "댓글이 수정되었습니다.");
 	}
 
 	@DeleteMapping("/item/{commentId}")
-	public ApiResponse<Void> delete(@PathVariable Long commentId, Authentication authentication) {
+	public ApiResponse<Void> delete(@PathVariable("commentId") Long commentId, Authentication authentication) {
 		commentService.delete(commentId, authentication.getName());
 		return ApiResponse.ok(null, "댓글이 삭제되었습니다.");
 	}

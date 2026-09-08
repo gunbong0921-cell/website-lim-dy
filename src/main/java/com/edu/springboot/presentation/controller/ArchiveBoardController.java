@@ -42,16 +42,16 @@ public class ArchiveBoardController {
 
 	@GetMapping
 	public ApiResponse<PageResponse<BoardSummaryResponse>> list(
-		@RequestParam(defaultValue = "1") int page,
-		@RequestParam(defaultValue = "10") int size,
-		@RequestParam(required = false) String searchType,
-		@RequestParam(required = false) String keyword
+		@RequestParam(name = "page", defaultValue = "1") int page,
+		@RequestParam(name = "size", defaultValue = "10") int size,
+		@RequestParam(name = "searchType", required = false) String searchType,
+		@RequestParam(name = "keyword", required = false) String keyword
 	) {
 		return ApiResponse.ok(archiveBoardService.list(searchType, keyword, page, size));
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ApiResponse<BoardDetailResponse>> read(@PathVariable Long id, HttpServletRequest request) {
+	public ResponseEntity<ApiResponse<BoardDetailResponse>> read(@PathVariable("id") Long id, HttpServletRequest request) {
 		String cookieName = viewCountPolicy.cookieName("ARCHIVE", id);
 		boolean viewed = CookieSupport.has(request, cookieName);
 		BoardDetailResponse detail = archiveBoardService.read(id, viewed);
@@ -69,8 +69,8 @@ public class ArchiveBoardController {
 	@PostMapping
 	public ApiResponse<Long> write(
 		Authentication authentication,
-		@RequestParam String title,
-		@RequestParam String content,
+		@RequestParam("title") String title,
+		@RequestParam("content") String content,
 		@RequestParam("files") List<MultipartFile> files
 	) {
 		return ApiResponse.ok(archiveBoardService.write(title, content, authentication.getName(), toUploads(files)),
@@ -79,10 +79,10 @@ public class ArchiveBoardController {
 
 	@PutMapping("/{id}")
 	public ApiResponse<Void> update(
-		@PathVariable Long id,
+		@PathVariable("id") Long id,
 		Authentication authentication,
-		@RequestParam String title,
-		@RequestParam String content,
+		@RequestParam("title") String title,
+		@RequestParam("content") String content,
 		@RequestParam(value = "files", required = false) List<MultipartFile> files
 	) {
 		archiveBoardService.update(id, title, content, authentication.getName(), toUploads(files));
@@ -90,13 +90,13 @@ public class ArchiveBoardController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ApiResponse<Void> delete(@PathVariable Long id, Authentication authentication) {
+	public ApiResponse<Void> delete(@PathVariable("id") Long id, Authentication authentication) {
 		archiveBoardService.delete(id, authentication.getName());
 		return ApiResponse.ok(null, "삭제되었습니다.");
 	}
 
 	@PostMapping("/{id}/like")
-	public ApiResponse<Integer> like(@PathVariable Long id, Authentication authentication) {
+	public ApiResponse<Integer> like(@PathVariable("id") Long id, Authentication authentication) {
 		return ApiResponse.ok(likeService.like("ARCHIVE", id, authentication.getName()));
 	}
 

@@ -38,17 +38,17 @@ public class FreeBoardController {
 
 	@GetMapping
 	public ApiResponse<PageResponse<BoardSummaryResponse>> list(
-		@RequestParam(defaultValue = "1") int page,
-		@RequestParam(defaultValue = "10") int size,
-		@RequestParam(required = false) String searchType,
-		@RequestParam(required = false) String keyword
+		@RequestParam(name = "page", defaultValue = "1") int page,
+		@RequestParam(name = "size", defaultValue = "10") int size,
+		@RequestParam(name = "searchType", required = false) String searchType,
+		@RequestParam(name = "keyword", required = false) String keyword
 	) {
 		return ApiResponse.ok(freeBoardService.list(searchType, keyword, page, size));
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<ApiResponse<BoardDetailResponse>> read(
-		@PathVariable Long id,
+		@PathVariable("id") Long id,
 		jakarta.servlet.http.HttpServletRequest request
 	) {
 		String cookieName = viewCountPolicy.cookieName("FREE", id);
@@ -73,19 +73,19 @@ public class FreeBoardController {
 	}
 
 	@PutMapping("/{id}")
-	public ApiResponse<Void> update(@PathVariable Long id, @RequestBody FreeWriteRequest request) {
+	public ApiResponse<Void> update(@PathVariable("id") Long id, @RequestBody FreeWriteRequest request) {
 		freeBoardService.update(id, request.title(), request.content(), request.password());
 		return ApiResponse.ok(null, "수정되었습니다.");
 	}
 
 	@DeleteMapping("/{id}")
-	public ApiResponse<Void> delete(@PathVariable Long id, @RequestBody FreeWriteRequest request) {
+	public ApiResponse<Void> delete(@PathVariable("id") Long id, @RequestBody FreeWriteRequest request) {
 		freeBoardService.delete(id, request.password());
 		return ApiResponse.ok(null, "삭제되었습니다.");
 	}
 
 	@PostMapping("/{id}/like")
-	public ApiResponse<Integer> like(@PathVariable Long id, Authentication authentication) {
+	public ApiResponse<Integer> like(@PathVariable("id") Long id, Authentication authentication) {
 		String loginId = (authentication == null || authentication instanceof AnonymousAuthenticationToken)
 			? null
 			: authentication.getName();

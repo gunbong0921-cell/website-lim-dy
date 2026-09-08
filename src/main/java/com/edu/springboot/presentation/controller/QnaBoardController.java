@@ -38,18 +38,18 @@ public class QnaBoardController {
 
 	@GetMapping
 	public ApiResponse<PageResponse<BoardSummaryResponse>> list(
-		@RequestParam String solution,
-		@RequestParam(defaultValue = "1") int page,
-		@RequestParam(defaultValue = "10") int size,
-		@RequestParam(required = false) String searchType,
-		@RequestParam(required = false) String keyword
+		@RequestParam("solution") String solution,
+		@RequestParam(name = "page", defaultValue = "1") int page,
+		@RequestParam(name = "size", defaultValue = "10") int size,
+		@RequestParam(name = "searchType", required = false) String searchType,
+		@RequestParam(name = "keyword", required = false) String keyword
 	) {
 		return ApiResponse.ok(qnaBoardService.list(solution, searchType, keyword, page, size));
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ApiResponse<BoardDetailResponse>> read(@PathVariable Long id,
-		@RequestParam(required = false) String solution, HttpServletRequest request) {
+	public ResponseEntity<ApiResponse<BoardDetailResponse>> read(@PathVariable("id") Long id,
+		@RequestParam(name = "solution", required = false) String solution, HttpServletRequest request) {
 		String cookieName = viewCountPolicy.cookieName("QNA", id);
 		boolean viewed = CookieSupport.has(request, cookieName);
 		BoardDetailResponse detail = qnaBoardService.read(id, solution, viewed);
@@ -72,20 +72,20 @@ public class QnaBoardController {
 	}
 
 	@PutMapping("/{id}")
-	public ApiResponse<Void> update(@PathVariable Long id, Authentication authentication,
+	public ApiResponse<Void> update(@PathVariable("id") Long id, Authentication authentication,
 		@RequestBody BoardWriteRequest request) {
 		qnaBoardService.update(id, request.title(), request.content(), authentication.getName());
 		return ApiResponse.ok(null, "수정되었습니다.");
 	}
 
 	@DeleteMapping("/{id}")
-	public ApiResponse<Void> delete(@PathVariable Long id, Authentication authentication) {
+	public ApiResponse<Void> delete(@PathVariable("id") Long id, Authentication authentication) {
 		qnaBoardService.delete(id, authentication.getName());
 		return ApiResponse.ok(null, "삭제되었습니다.");
 	}
 
 	@PostMapping("/{id}/like")
-	public ApiResponse<Integer> like(@PathVariable Long id, Authentication authentication) {
+	public ApiResponse<Integer> like(@PathVariable("id") Long id, Authentication authentication) {
 		return ApiResponse.ok(likeService.like("QNA", id, authentication.getName()));
 	}
 

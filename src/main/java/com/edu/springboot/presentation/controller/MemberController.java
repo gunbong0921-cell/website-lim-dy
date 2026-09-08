@@ -29,14 +29,14 @@ public class MemberController {
 	private final MemberProfileService memberProfileService;
 
 	@GetMapping("/check-id")
-	public ApiResponse<Map<String, Boolean>> checkId(@RequestParam String loginId) {
+	public ApiResponse<Map<String, Boolean>> checkId(@RequestParam("loginId") String loginId) {
 		boolean available = signUpService.isLoginIdAvailable(loginId);
 		return ApiResponse.ok(Map.of("available", available),
 			available ? "사용 가능한 아이디입니다." : "이미 사용 중인 아이디입니다.");
 	}
 
 	@GetMapping("/check-email")
-	public ApiResponse<Map<String, Boolean>> checkEmail(@RequestParam String email) {
+	public ApiResponse<Map<String, Boolean>> checkEmail(@RequestParam("email") String email) {
 		boolean available = signUpService.isEmailAvailable(email);
 		return ApiResponse.ok(Map.of("available", available),
 			available ? "사용 가능한 이메일입니다." : "이미 등록된 이메일입니다.");

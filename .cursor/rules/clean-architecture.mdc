@@ -1,0 +1,30 @@
+---
+description: 클린 아키텍처 의존성 규칙, 패키지 계층, 통일 API 응답. 백엔드 코드 작성 시 항상 적용.
+alwaysApply: true
+---
+
+# 클린 아키텍처
+
+의존성은 바깥 → 안쪽만 허용한다. `Presentation → Application → Domain`, `Infrastructure → Domain`. **Domain은 다른 계층에 의존하지 않는다.**
+
+Spring/JPA/MyBatis/React는 교체 가능한 세부사항이다. Domain에 MyBatis/Spring Web import 금지. `@Entity`는 3일 일정 타협으로 Domain에 허용한다.
+
+```
+com.edu.springboot
+ ├─ domain/member|board|file     엔티티, VO, Repository 인터페이스, Policy
+ ├─ application/member|board|auth 유스케이스, @Transactional, application dto
+ ├─ infrastructure/persistence|mail|file|security  JPA/MyBatis/Mail/Security 구현
+ └─ presentation/controller|dto  요청 검증, DTO 변환. 비즈니스 로직 금지
+```
+
+| 계층 | 허용 | 금지 |
+|---|---|---|
+| domain | 순수 규칙, VO, 도메인 이벤트 | 컨트롤러/HTTP, MyBatis |
+| application | domain 조립, 트랜잭션 | HTTP/Servlet 코드 |
+| infrastructure | JPA·MyBatis·Mail·Security 구현 | 비즈니스 규칙 |
+| presentation | 검증, Application 호출, 응답 변환 | 도메인 규칙 직접 작성 |
+
+- Application은 `MemberRepositoryImpl`이 아니라 `MemberRepository`에 의존한다.
+- Controller는 Domain 객체를 노출하지 않는다.
+- API 응답은 `{ success, data, message }`로 통일한다. 변경 시 영향 범위를 보고하고 승인받는다.
+- Security는 infrastructure에만 둔다. Application/Domain은 `SecurityContext`를 직접 참조하지 않는다.

@@ -25,7 +25,7 @@ public class FileController {
 	private final FileDownloadService fileDownloadService;
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Resource> download(@PathVariable Long id) throws Exception {
+	public ResponseEntity<Resource> download(@PathVariable("id") Long id) throws Exception {
 		FileDownload file = fileDownloadService.get(id);
 		MediaType mediaType = MediaType.APPLICATION_OCTET_STREAM;
 		if (file.contentType() != null && !file.contentType().isBlank()) {

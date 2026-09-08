@@ -1,0 +1,33 @@
+---
+description: SOLID와 전략/정책 패턴. 게시판 분리, 첨부 렌더, 조회수 쿠키에 적용.
+globs:
+  - "**/*.java"
+  - "frontend-react/src/**/*.js"
+  - "frontend-react/src/**/*.jsx"
+alwaysApply: false
+---
+
+# 객체지향 (SOLID)
+
+- **SRP**: `FreeBoardService` / `QnaBoardService` / `ArchiveBoardService`를 하나로 합치지 않는다. 댓글은 `CommentService`.
+- **OCP**: 자료실 첨부 타입(img/video/audio/download)은 if/switch 나열이 아니라 전략(`FileTypeClassifier` + 프론트 `FileViewer` 맵). 새 타입은 전략만 추가.
+- **LSP**: 공통 `Board` 계약을 쓸 때 자료실 첨부 필수 때문에 `write()` 시그니처를 깨지 않는다.
+- **ISP**: `MemberRepository`에 가입/로그인/비번재설정을 무리하게 몰지 말고 필요 시 쿼리/커맨드를 분리한다.
+- **DIP**: Application은 domain 인터페이스에만 의존한다.
+
+## 패턴
+
+| 기능 | 패턴 |
+|---|---|
+| 첨부 타입 분류/렌더 | Strategy |
+| 인증·임시비번 메일 | Service + `MailSender` 포트 |
+| 조회수 하루 1회 | `ViewCountPolicy` |
+| 게시판 CRUD | 게시판별 서비스 (공통 흐름만 공유) |
+
+```java
+// BAD: 타입 추가 때마다 수정
+if (ext.equals("png")) ... else if (ext.equals("mp4")) ...
+
+// GOOD: 분류 전략에 위임
+AttachmentType type = classifier.classify(filename);
+```
