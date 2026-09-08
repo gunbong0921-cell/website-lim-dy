@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.edu.springboot.infrastructure.persistence.mybatis.BoardFileMapper">
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		INSERT INTO HEXAQ_BOARD_FILE (board_id, original_name, stored_name, content_type, file_size, file_type)
+		VALUES (#{boardId}, #{originalName}, #{storedName}, #{contentType}, #{fileSize}, #{fileType})
+	</insert>
+
+	<select id="findByBoardId" resultType="com.edu.springboot.domain.board.BoardFile">
+		SELECT id, board_id, original_name, stored_name, content_type, file_size, file_type
+		FROM HEXAQ_BOARD_FILE WHERE board_id = #{boardId} ORDER BY id ASC
+	</select>
+
+	<select id="findById" resultType="com.edu.springboot.domain.board.BoardFile">
+		SELECT id, board_id, original_name, stored_name, content_type, file_size, file_type
+		FROM HEXAQ_BOARD_FILE WHERE id = #{id}
+	</select>
+
+	<delete id="deleteByBoardId">
+		DELETE FROM HEXAQ_BOARD_FILE WHERE board_id = #{boardId}
+	</delete>
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.edu.springboot.infrastructure.persistence.mybatis.CommentMapper">
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		INSERT INTO HEXAQ_COMMENT (board_id, writer, content, created_at)
+		VALUES (#{boardId}, #{writer}, #{content}, #{createdAt})
+	</insert>
+
+	<select id="findById" resultType="com.edu.springboot.domain.board.Comment">
+		SELECT id, board_id, writer, content, created_at, updated_at
+		FROM HEXAQ_COMMENT WHERE id = #{id}
+	</select>
+
+	<select id="findByBoardId" resultType="com.edu.springboot.domain.board.Comment">
+		SELECT id, board_id, writer, content, created_at, updated_at
+		FROM HEXAQ_COMMENT WHERE board_id = #{boardId} ORDER BY id ASC
+	</select>
+
+	<update id="update">
+		UPDATE HEXAQ_COMMENT SET content = #{content}, updated_at = #{updatedAt} WHERE id = #{id}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM HEXAQ_COMMENT WHERE id = #{id}
+	</delete>
+
+	<delete id="deleteByBoardId">
+		DELETE FROM HEXAQ_COMMENT WHERE board_id = #{boardId}
+	</delete>
+</mapper>

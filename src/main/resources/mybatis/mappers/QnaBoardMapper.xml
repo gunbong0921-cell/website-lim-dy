@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.edu.springboot.infrastructure.persistence.mybatis.QnaBoardMapper">
+
+	<sql id="search">
+		<where>
+			solution = #{solution}
+			<if test="keyword != null and keyword != ''">
+				<choose>
+					<when test="searchType == 'title'">AND title LIKE '%' || #{keyword} || '%'</when>
+					<when test="searchType == 'content'">AND content LIKE '%' || #{keyword} || '%'</when>
+					<when test="searchType == 'writer'">AND writer LIKE '%' || #{keyword} || '%'</when>
+					<otherwise>
+						AND (title LIKE '%' || #{keyword} || '%' OR content LIKE '%' || #{keyword} || '%')
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+	</sql>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		INSERT INTO HEXAQ_QNA_BOARD (title, content, writer, solution, visit_count, like_count, created_at)
+		VALUES (#{title}, #{content, jdbcType=CLOB}, #{writer}, #{solution}, 0, 0, #{createdAt})
+	</insert>
+
+	<select id="findById" resultType="com.edu.springboot.domain.board.QnaBoard">
+		SELECT id, title, content, writer, solution, visit_count, like_count, created_at, updated_at
+		FROM HEXAQ_QNA_BOARD WHERE id = #{id}
+	</select>
+
+	<update id="update">
+		UPDATE HEXAQ_QNA_BOARD
+		SET title = #{title}, content = #{content, jdbcType=CLOB}, updated_at = #{updatedAt}
+		WHERE id = #{id}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM HEXAQ_QNA_BOARD WHERE id = #{id}
+	</delete>
+
+	<select id="findPage" resultType="com.edu.springboot.domain.board.QnaBoard">
+		SELECT id, title, writer, solution, visit_count, like_count, created_at
+		FROM HEXAQ_QNA_BOARD
+		<include refid="search"/>
+		ORDER BY id DESC
+		OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
+	</select>
+
+	<select id="count" resultType="long">
+		SELECT COUNT(*) FROM HEXAQ_QNA_BOARD
+		<include refid="search"/>
+	</select>
+
+	<update id="increaseVisitCount">
+		UPDATE HEXAQ_QNA_BOARD SET visit_count = visit_count + 1 WHERE id = #{id}
+	</update>
+
+	<update id="increaseLikeCount">
+		UPDATE HEXAQ_QNA_BOARD SET like_count = like_count + 1 WHERE id = #{id}
+	</update>
+</mapper>

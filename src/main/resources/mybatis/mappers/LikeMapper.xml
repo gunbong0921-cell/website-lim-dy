@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.edu.springboot.infrastructure.persistence.mybatis.LikeMapper">
+
+	<select id="exists" resultType="int">
+		SELECT COUNT(*) FROM HEXAQ_BOARD_LIKE
+		WHERE board_type = #{boardType} AND board_id = #{boardId} AND member_login_id = #{memberLoginId}
+	</select>
+
+	<insert id="insert">
+		INSERT INTO HEXAQ_BOARD_LIKE (board_type, board_id, member_login_id)
+		VALUES (#{boardType}, #{boardId}, #{memberLoginId})
+	</insert>
+</mapper>
