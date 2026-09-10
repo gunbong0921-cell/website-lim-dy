@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: App
+ * 객체: vite.config
+ * 책임: React 정적 빌드. same-origin-assets 가 같은 출처 JS·CSS 의 crossorigin 을 뺀다
+ * 문서: [docs/technical/03-cloudflare-tunnel.md](../docs/technical/03-cloudflare-tunnel.md) · [docs/technical/01-architecture.md](../docs/technical/01-architecture.md)
+ */
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'

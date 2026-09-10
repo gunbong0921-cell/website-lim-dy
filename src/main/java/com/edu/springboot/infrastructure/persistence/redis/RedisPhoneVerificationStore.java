@@ -8,6 +8,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 
 import com.edu.springboot.domain.member.VerificationStore;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: RedisPhoneVerificationStore
+ * 책임: PHONE_VERIFY: TTL 코드·쿨다운·토큰. StringRedisTemplate
+ * 문서: [docs/technical/04-redis.md](../../../../../../../../../docs/technical/04-redis.md)
+ */
 public class RedisPhoneVerificationStore implements VerificationStore {
 
 	private static final String CODE_PREFIX = "PHONE_VERIFY:";

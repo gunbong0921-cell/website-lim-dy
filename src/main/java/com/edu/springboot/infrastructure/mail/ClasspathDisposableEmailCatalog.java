@@ -14,6 +14,13 @@ import com.edu.springboot.domain.member.DisposableEmailCatalog;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: ClasspathDisposableEmailCatalog
+ * 책임: ClasspathDisposableEmailCatalog 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/features/01-signup-verification.md](../../../../../../../../docs/features/01-signup-verification.md) · [docs/security/05-disposable-email.md](../../../../../../../../docs/security/05-disposable-email.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Slf4j
 @Component
 public class ClasspathDisposableEmailCatalog implements DisposableEmailCatalog {

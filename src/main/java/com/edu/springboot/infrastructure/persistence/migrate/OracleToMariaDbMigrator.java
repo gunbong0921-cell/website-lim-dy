@@ -15,8 +15,11 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * One-shot JDBC copy. Not a Spring bean. Run via scripts/migrate-oracle-to-mariadb.ps1
- * or {@code gradlew migrateOracleToMariaDb}.
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: OracleToMariaDbMigrator
+ * 책임: Oracle HEXAQ_* → MariaDB 일회 JDBC 복사. Spring 빈 아님. scripts/migrate-oracle-to-mariadb.ps1
+ * 문서: [docs/technical/02-technical-specification.md](../../../../../../../../../docs/technical/02-technical-specification.md)
  */
 public final class OracleToMariaDbMigrator {
 

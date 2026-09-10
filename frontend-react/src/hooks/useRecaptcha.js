@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: Hooks
+ * 객체: useRecaptcha
+ * 책임: 공개 설정 로드 후 grecaptcha.execute. *.trycloudflare.com 이면 api.js 없이 빈 토큰
+ * 문서: [docs/security/03-recaptcha-v3.md](../../../docs/security/03-recaptcha-v3.md) · [docs/technical/03-cloudflare-tunnel.md](../../../docs/technical/03-cloudflare-tunnel.md)
+ */
 import { useCallback } from 'react'
 import { publicApi } from '../services/api/publicApi'
 

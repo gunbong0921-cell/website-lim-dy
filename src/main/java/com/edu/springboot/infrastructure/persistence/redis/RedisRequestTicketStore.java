@@ -7,6 +7,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 
 import com.edu.springboot.domain.security.RequestTicketStore;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: RedisRequestTicketStore
+ * 책임: REQ_TICKET: HMAC 일회 티켓 GETDEL
+ * 문서: [docs/technical/04-redis.md](../../../../../../../../../docs/technical/04-redis.md) · [docs/security/01-hmac-request-signing.md](../../../../../../../../../docs/security/01-hmac-request-signing.md)
+ */
 public class RedisRequestTicketStore implements RequestTicketStore {
 
 	private static final String PREFIX = "REQ_TICKET:";

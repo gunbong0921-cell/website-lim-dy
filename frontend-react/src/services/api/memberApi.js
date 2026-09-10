@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: API
+ * 객체: memberApi
+ * 책임: fetch 와 { success, data, message } 파싱
+ * 문서: [docs/features/overview.md](../../../../docs/features/overview.md) · [docs/technical/01-architecture.md](../../../../docs/technical/01-architecture.md)
+ */
 import { apiRequest } from './client'
 
 export const memberApi = {

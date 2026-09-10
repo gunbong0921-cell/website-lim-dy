@@ -9,6 +9,13 @@ import com.edu.springboot.domain.captcha.CaptchaPolicy;
 import com.edu.springboot.domain.captcha.CaptchaResult;
 import com.edu.springboot.domain.captcha.CaptchaVerifier;
 
+/**
+ * Hexaq
+ * 계층: Application
+ * 객체: VerifyCaptchaService
+ * 책임: 캡차 게이트. 터널 호스트이거나 비활성이면 no-op
+ * 문서: [docs/security/03-recaptcha-v3.md](../../../../../../../../docs/security/03-recaptcha-v3.md)
+ */
 @Service
 public class VerifyCaptchaService {
 

@@ -1,3 +1,9 @@
+# Hexaq
+# 계층: Scripts
+# 객체: cloudflare-tunnel.ps1
+# 책임: 로컬 8282 를 Quick Tunnel(https://*.trycloudflare.com)로 연다. 프로세스를 끄면 URL 이 죽는다.
+# 문서: [docs/technical/03-cloudflare-tunnel.md](../docs/technical/03-cloudflare-tunnel.md)
+#
 # Requires cloudflared. Publishes local Spring Boot (8282) at a trycloudflare.com URL.
 # Keep this process running. The URL changes each start (Quick Tunnel).
 $ErrorActionPreference = "Stop"

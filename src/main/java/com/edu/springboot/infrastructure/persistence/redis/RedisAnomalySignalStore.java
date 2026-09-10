@@ -8,6 +8,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 
 import com.edu.springboot.domain.anomaly.AnomalySignalStore;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: RedisAnomalySignalStore
+ * 책임: ANOMALY:* 가입시각·윈도·GET 리스트·단계
+ * 문서: [docs/technical/04-redis.md](../../../../../../../../../docs/technical/04-redis.md) · [docs/security/07-anomaly-guard.md](../../../../../../../../../docs/security/07-anomaly-guard.md)
+ */
 public class RedisAnomalySignalStore implements AnomalySignalStore {
 
 	private static final String SIGNUP = "ANOMALY:SIGNUP:";

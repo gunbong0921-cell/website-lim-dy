@@ -1,6 +1,10 @@
--- Hexaq MariaDB DDL (prod). Local Oracle uses schema.sql.
--- Linux: set lower_case_table_names=1 (or match HEXAQ_* as created). App SQL keeps HEXAQ_*.
--- Board tables are MyBatis (not JPA). Hibernate ddl-auto does not create them.
+-- Hexaq
+-- 계층: Infrastructure (참고 DDL)
+-- 객체: schema-mariadb.sql
+-- 책임: 운영(prod) MariaDB CREATE. 이력 ALTER 없음. 게시판은 MyBatis.
+-- 문서: [docs/technical/02-technical-specification.md](../../../docs/technical/02-technical-specification.md)
+-- Linux: lower_case_table_names=1 권장. 앱 SQL 은 HEXAQ_*.
+-- Hibernate ddl-auto 는 회원·카카오친구만 만든다.
 
 CREATE TABLE IF NOT EXISTS HEXAQ_MEMBER (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,

@@ -5,6 +5,13 @@ import java.util.List;
 import com.edu.springboot.domain.member.KakaoFriend;
 import com.edu.springboot.domain.member.Member;
 
+/**
+ * Hexaq
+ * 계층: Application
+ * 객체: MemberMapper
+ * 책임: Member → MemberResponse 변환
+ * 문서: [docs/features/01-signup-verification.md](../../../../../../../../../docs/features/01-signup-verification.md) · [docs/features/02-business-registration.md](../../../../../../../../../docs/features/02-business-registration.md) · [docs/features/03-login-logout.md](../../../../../../../../../docs/features/03-login-logout.md) · [docs/technical/01-architecture.md](../../../../../../../../../docs/technical/01-architecture.md)
+ */
 public final class MemberMapper {
 
 	private MemberMapper() {

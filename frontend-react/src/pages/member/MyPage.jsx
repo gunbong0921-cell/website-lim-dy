@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: Pages
+ * 객체: MyPage
+ * 책임: 화면 조립. fetch 금지. hooks 만 호출
+ * 문서: [docs/features/01-signup-verification.md](../../../../docs/features/01-signup-verification.md) · [docs/features/03-login-logout.md](../../../../docs/features/03-login-logout.md) · [docs/features/overview.md](../../../../docs/features/overview.md)
+ */
 import { useEffect, useState } from 'react'
 import PageHeader from '../../components/common/PageHeader'
 import { useAuth } from '../../hooks/useAuth'

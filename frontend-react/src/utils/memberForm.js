@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: Utils
+ * 객체: memberForm
+ * 책임: memberForm 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/features/overview.md](../../../docs/features/overview.md) · [docs/technical/01-architecture.md](../../../docs/technical/01-architecture.md)
+ */
 export function digitsOnly(value, max = 11) {
   return (value || '').replace(/\D/g, '').slice(0, max)
 }

@@ -1,3 +1,8 @@
+// Hexaq Gradle
+// 계층: Build
+// 객체: build.gradle
+// 책임: Java 21 WAR. ojdbc17(로컬 Oracle) + mariadb-java-client(prod). Redis 스타터. migrateOracleToMariaDb 는 npmBuild 없이 이관.
+// 문서: [docs/technical/02-technical-specification.md](docs/technical/02-technical-specification.md) · [docs/technical/04-redis.md](docs/technical/04-redis.md)
 plugins {
 	id 'java'
 	id 'war'

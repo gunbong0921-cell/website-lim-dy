@@ -7,6 +7,13 @@ import org.springframework.stereotype.Component;
 
 import com.edu.springboot.application.member.EnsureAdminMemberService;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: AdminAccountInitializer
+ * 책임: AdminAccountInitializer 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md) · [docs/technical/04-redis.md](../../../../../../../../docs/technical/04-redis.md)
+ */
 @Component
 public class AdminAccountInitializer implements ApplicationRunner {
 

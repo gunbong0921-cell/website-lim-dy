@@ -14,6 +14,13 @@ import org.springframework.web.client.RestClient;
 import com.edu.springboot.domain.captcha.CaptchaResult;
 import com.edu.springboot.domain.captcha.CaptchaVerifier;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: GoogleRecaptchaV3Verifier
+ * 책임: GoogleRecaptchaV3Verifier 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/security/03-recaptcha-v3.md](../../../../../../../../docs/security/03-recaptcha-v3.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Component
 public class GoogleRecaptchaV3Verifier implements CaptchaVerifier {
 

@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: Pages
+ * 객체: BoardListPage
+ * 책임: 화면 조립. fetch 금지. hooks 만 호출
+ * 문서: [docs/features/07-boards.md](../../../../docs/features/07-boards.md) · [docs/features/08-views-likes-comments.md](../../../../docs/features/08-views-likes-comments.md)
+ */
 import { Link, NavLink, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { QNA_SOLUTIONS, qnaBoardPath, qnaSolutionLabel, resolveQnaSolution } from '../../board/qnaSolutions'
 import PageHeader from '../../components/common/PageHeader'

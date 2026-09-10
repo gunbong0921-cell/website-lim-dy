@@ -12,6 +12,13 @@ import org.springframework.stereotype.Service;
 import com.edu.springboot.domain.security.RequestTicket;
 import com.edu.springboot.domain.security.RequestTicketStore;
 
+/**
+ * Hexaq
+ * 계층: Application
+ * 객체: IssueRequestTicketService
+ * 책임: 유스케이스. @Transactional. Domain 포트만 의존
+ * 문서: [docs/security/01-hmac-request-signing.md](../../../../../../../../docs/security/01-hmac-request-signing.md) · [docs/technical/04-redis.md](../../../../../../../../docs/technical/04-redis.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Service
 public class IssueRequestTicketService {
 

@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: App
+ * 객체: App
+ * 책임: App 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/features/overview.md](../../docs/features/overview.md) · [docs/technical/01-architecture.md](../../docs/technical/01-architecture.md)
+ */
 import { useEffect } from 'react'
 import { Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { qnaBoardPath, resolveQnaSolution } from './board/qnaSolutions'

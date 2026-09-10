@@ -9,6 +9,13 @@ import com.solapi.sdk.message.exception.SolapiMessageNotReceivedException;
 import com.solapi.sdk.message.model.Message;
 import com.solapi.sdk.message.service.DefaultMessageService;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: SolapiSmsSender
+ * 책임: SolapiSmsSender 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/security/06-identity-verification.md](../../../../../../../../docs/security/06-identity-verification.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Component
 public class SolapiSmsSender implements SmsSender {
 

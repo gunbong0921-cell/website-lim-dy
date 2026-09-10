@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: Pages
+ * 객체: SignUpPage
+ * 책임: 화면 조립. fetch 금지. hooks 만 호출
+ * 문서: [docs/features/01-signup-verification.md](../../../../docs/features/01-signup-verification.md) · [docs/features/03-login-logout.md](../../../../docs/features/03-login-logout.md) · [docs/features/overview.md](../../../../docs/features/overview.md)
+ */
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import SignUpTerms from '../../components/member/SignUpTerms'

@@ -13,6 +13,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: WebCorsConfig
+ * 책임: allowedOriginPatterns. https://*.trycloudflare.com 포함
+ * 문서: [docs/technical/03-cloudflare-tunnel.md](../../../../../../../../docs/technical/03-cloudflare-tunnel.md)
+ */
 @Configuration
 public class WebCorsConfig implements WebMvcConfigurer {
 

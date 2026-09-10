@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: Utils
+ * 객체: requestSignature
+ * 책임: requestSignature 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/security/01-hmac-request-signing.md](../../../docs/security/01-hmac-request-signing.md)
+ */
 function hex(buffer) {
   return Array.from(new Uint8Array(buffer))
     .map((byte) => byte.toString(16).padStart(2, '0'))

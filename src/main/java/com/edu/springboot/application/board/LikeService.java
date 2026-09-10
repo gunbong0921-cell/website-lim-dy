@@ -14,6 +14,13 @@ import com.edu.springboot.domain.board.BoardLikeCounter;
 import com.edu.springboot.domain.board.LikePolicy;
 import com.edu.springboot.domain.board.LikeRepository;
 
+/**
+ * Hexaq
+ * 계층: Application
+ * 객체: LikeService
+ * 책임: 유스케이스. @Transactional. Domain 포트만 의존
+ * 문서: [docs/features/07-boards.md](../../../../../../../../docs/features/07-boards.md) · [docs/features/08-views-likes-comments.md](../../../../../../../../docs/features/08-views-likes-comments.md) · [docs/features/09-archive-attachments.md](../../../../../../../../docs/features/09-archive-attachments.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Service
 @Transactional
 public class LikeService {

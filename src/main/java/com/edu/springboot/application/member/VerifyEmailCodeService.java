@@ -11,6 +11,13 @@ import com.edu.springboot.domain.member.VerificationStore;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Hexaq
+ * 계층: Application
+ * 객체: VerifyEmailCodeService
+ * 책임: 유스케이스. @Transactional. Domain 포트만 의존
+ * 문서: [docs/features/01-signup-verification.md](../../../../../../../../docs/features/01-signup-verification.md) · [docs/features/02-business-registration.md](../../../../../../../../docs/features/02-business-registration.md) · [docs/features/03-login-logout.md](../../../../../../../../docs/features/03-login-logout.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Service
 @RequiredArgsConstructor
 public class VerifyEmailCodeService {

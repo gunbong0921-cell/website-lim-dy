@@ -18,6 +18,13 @@ import com.edu.springboot.domain.member.BusinessIdentity;
 import com.edu.springboot.domain.member.BusinessRegistrationGateway;
 import com.edu.springboot.domain.member.BusinessRegistrationResult;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: NtsOpendataBusinessRegistrationGateway
+ * 책임: 외부 시스템 포트 또는 구현
+ * 문서: [docs/features/02-business-registration.md](../../../../../../../../docs/features/02-business-registration.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Component
 public class NtsOpendataBusinessRegistrationGateway implements BusinessRegistrationGateway {
 

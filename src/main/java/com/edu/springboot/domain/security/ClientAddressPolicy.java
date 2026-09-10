@@ -1,5 +1,12 @@
 package com.edu.springboot.domain.security;
 
+/**
+ * Hexaq
+ * 계층: Domain
+ * 객체: ClientAddressPolicy
+ * 책임: 신뢰 프록시일 때만 포워드 헤더로 IP·호스트 결정. HTTP 모름
+ * 문서: [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 public class ClientAddressPolicy {
 
 	private final boolean trustedProxy;

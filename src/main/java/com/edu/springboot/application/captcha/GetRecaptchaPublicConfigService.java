@@ -5,6 +5,13 @@ import org.springframework.stereotype.Service;
 
 import com.edu.springboot.domain.captcha.CaptchaPolicy;
 
+/**
+ * Hexaq
+ * 계층: Application
+ * 객체: GetRecaptchaPublicConfigService
+ * 책임: 프론트용 사이트 키. 비밀 키 없음. 터널 호스트면 끔
+ * 문서: [docs/security/03-recaptcha-v3.md](../../../../../../../../docs/security/03-recaptcha-v3.md)
+ */
 @Service
 public class GetRecaptchaPublicConfigService {
 

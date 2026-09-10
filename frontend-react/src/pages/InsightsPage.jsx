@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: Pages
+ * 객체: InsightsPage
+ * 책임: 화면 조립. fetch 금지. hooks 만 호출
+ * 문서: [docs/features/overview.md](../../../docs/features/overview.md) · [docs/technical/02-technical-specification.md](../../../docs/technical/02-technical-specification.md)
+ */
 import { Link } from 'react-router-dom'
 import MotionImage from '../components/common/MotionImage'
 import PageHeader from '../components/common/PageHeader'

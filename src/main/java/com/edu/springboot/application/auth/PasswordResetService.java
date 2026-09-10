@@ -15,6 +15,13 @@ import com.edu.springboot.domain.member.PasswordEncryptor;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Hexaq
+ * 계층: Application
+ * 객체: PasswordResetService
+ * 책임: 유스케이스. @Transactional. Domain 포트만 의존
+ * 문서: [docs/features/05-find-id-password.md](../../../../../../../../docs/features/05-find-id-password.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional

@@ -15,6 +15,13 @@ import com.edu.springboot.domain.anomaly.AnomalyStep;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: AnomalyNavigationInterceptor
+ * 책임: Spring MVC 인터셉터
+ * 문서: [docs/security/overview.md](../../../../../../../../docs/security/overview.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Component
 public class AnomalyNavigationInterceptor implements HandlerInterceptor {
 

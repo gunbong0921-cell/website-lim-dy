@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: Components
+ * 객체: Header
+ * 책임: Header 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/features/overview.md](../../../../docs/features/overview.md) · [docs/technical/01-architecture.md](../../../../docs/technical/01-architecture.md)
+ */
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
 import { NavLink, useNavigate } from 'react-router-dom'

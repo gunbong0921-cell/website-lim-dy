@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: Hooks
+ * 객체: useComment
+ * 책임: 화면 유스케이스. services/api 호출
+ * 문서: [docs/features/overview.md](../../../docs/features/overview.md) · [docs/technical/01-architecture.md](../../../docs/technical/01-architecture.md)
+ */
 import { useCallback, useEffect, useState } from 'react'
 import { commentApi } from '../services/api/commentApi'
 

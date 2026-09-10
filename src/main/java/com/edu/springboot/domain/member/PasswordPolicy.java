@@ -2,6 +2,13 @@ package com.edu.springboot.domain.member;
 
 import java.util.regex.Pattern;
 
+/**
+ * Hexaq
+ * 계층: Domain
+ * 객체: PasswordPolicy
+ * 책임: 도메인 규칙. HTTP·DB 모름
+ * 문서: [docs/features/01-signup-verification.md](../../../../../../../../docs/features/01-signup-verification.md) · [docs/security/06-identity-verification.md](../../../../../../../../docs/security/06-identity-verification.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 public class PasswordPolicy {
 
 	private static final int MIN_LENGTH = 8;

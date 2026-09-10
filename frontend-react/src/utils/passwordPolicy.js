@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: Utils
+ * 객체: passwordPolicy
+ * 책임: 도메인 규칙. HTTP·DB 모름
+ * 문서: [docs/features/overview.md](../../../docs/features/overview.md) · [docs/technical/01-architecture.md](../../../docs/technical/01-architecture.md)
+ */
 export const PASSWORD_RULE_TEXT = '8~20자, 영문+숫자+특수문자 조합'
 
 export function isStrongPassword(password) {

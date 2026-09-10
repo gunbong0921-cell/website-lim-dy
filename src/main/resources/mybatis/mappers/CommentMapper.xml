@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Hexaq / 계층: Infrastructure / 객체: CommentMapper
+     책임: QnA 댓글 SQL
+     문서: [docs/features/07-boards.md](../../../../../docs/features/07-boards.md) · [docs/features/08-views-likes-comments.md](../../../../../docs/features/08-views-likes-comments.md) · [docs/technical/02-technical-specification.md](../../../../../docs/technical/02-technical-specification.md) -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.edu.springboot.infrastructure.persistence.mybatis.CommentMapper">
 

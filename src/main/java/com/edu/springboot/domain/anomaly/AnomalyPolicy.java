@@ -1,5 +1,12 @@
 package com.edu.springboot.domain.anomaly;
 
+/**
+ * Hexaq
+ * 계층: Domain
+ * 객체: AnomalyPolicy
+ * 책임: 도메인 규칙. HTTP·DB 모름
+ * 문서: [docs/security/07-anomaly-guard.md](../../../../../../../../docs/security/07-anomaly-guard.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 public class AnomalyPolicy {
 
 	public AnomalyVerdict decide(

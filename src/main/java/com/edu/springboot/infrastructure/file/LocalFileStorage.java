@@ -12,6 +12,13 @@ import org.springframework.stereotype.Component;
 
 import com.edu.springboot.domain.file.FileStorage;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: LocalFileStorage
+ * 책임: LocalFileStorage 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/features/09-archive-attachments.md](../../../../../../../../docs/features/09-archive-attachments.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Component
 public class LocalFileStorage implements FileStorage {
 

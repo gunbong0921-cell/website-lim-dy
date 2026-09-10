@@ -12,6 +12,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: SecurityConfig
+ * 책임: 스프링 설정. 구현 빈을 포트에 꽂음
+ * 문서: [docs/security/overview.md](../../../../../../../../docs/security/overview.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor

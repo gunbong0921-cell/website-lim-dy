@@ -12,6 +12,13 @@ import org.springframework.web.client.RestClient;
 
 import com.edu.springboot.domain.member.KakaoTalkGateway;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: KakaoTalkMemoClient
+ * 책임: KakaoTalkMemoClient 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/features/04-social-login.md](../../../../../../../../docs/features/04-social-login.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Component
 public class KakaoTalkMemoClient implements KakaoTalkGateway {
 

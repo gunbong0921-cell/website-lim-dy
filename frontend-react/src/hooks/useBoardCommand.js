@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: Hooks
+ * 객체: useBoardCommand
+ * 책임: Application/Presentation DTO. Domain 엔티티를 API 에 직접 노출하지 않음
+ * 문서: [docs/features/overview.md](../../../docs/features/overview.md) · [docs/technical/01-architecture.md](../../../docs/technical/01-architecture.md)
+ */
 import { useCallback } from 'react'
 import { boardApi } from '../services/api/boardApi'
 import { useRecaptcha } from './useRecaptcha'

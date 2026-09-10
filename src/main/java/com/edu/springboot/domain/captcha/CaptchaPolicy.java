@@ -1,5 +1,12 @@
 package com.edu.springboot.domain.captcha;
 
+/**
+ * Hexaq
+ * 계층: Domain
+ * 객체: CaptchaPolicy
+ * 책임: 점수·action 판정. *.trycloudflare.com 은 requiredOnHost=false
+ * 문서: [docs/security/03-recaptcha-v3.md](../../../../../../../../docs/security/03-recaptcha-v3.md) · [docs/technical/03-cloudflare-tunnel.md](../../../../../../../../docs/technical/03-cloudflare-tunnel.md)
+ */
 public class CaptchaPolicy {
 
 	public boolean passed(CaptchaResult result, String expectedAction, double minScore) {

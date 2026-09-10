@@ -1,3 +1,9 @@
+# Hexaq
+# 계층: Scripts
+# 객체: migrate-oracle-to-mariadb.ps1
+# 책임: Oracle HEXAQ_* 를 MariaDB 로 복사(ID 유지). 웹 앱 Domain 이 아님. uploads/ 는 디스크라 복사하지 않음.
+# 문서: [docs/technical/02-technical-specification.md](../docs/technical/02-technical-specification.md)
+#
 # Copy HEXAQ_* rows Oracle -> MariaDB. Does not start the web app.
 # Create the MariaDB schema first (`schema-mariadb.sql` or `bootRun --args="--spring.profiles.active=prod"`).
 # Attachments in uploads/ are not copied (disk, not DB).

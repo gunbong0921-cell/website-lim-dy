@@ -5,6 +5,13 @@ import org.springframework.http.ResponseCookie;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
+/**
+ * Hexaq
+ * 계층: Presentation
+ * 객체: CookieSupport
+ * 책임: CookieSupport 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/technical/02-technical-specification.md](../../../../../../../../docs/technical/02-technical-specification.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 final class CookieSupport {
 
 	private CookieSupport() {

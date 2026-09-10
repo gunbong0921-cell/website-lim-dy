@@ -1,3 +1,10 @@
+/**
+ * Hexaq
+ * 계층: Components
+ * 객체: Pagination
+ * 책임: Pagination 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/features/overview.md](../../../../docs/features/overview.md) · [docs/technical/01-architecture.md](../../../../docs/technical/01-architecture.md)
+ */
 export default function Pagination({ page, totalPages, onChange }) {
   const last = Math.max(1, totalPages || 1)
   const current = Math.min(Math.max(1, page || 1), last)

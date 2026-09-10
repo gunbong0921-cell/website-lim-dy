@@ -10,6 +10,13 @@ import com.edu.springboot.domain.member.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: MemberRepositoryImpl
+ * 책임: 저장 포트 구현. JPA 또는 MyBatis
+ * 문서: [docs/features/01-signup-verification.md](../../../../../../../../../docs/features/01-signup-verification.md) · [docs/technical/01-architecture.md](../../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Repository
 @RequiredArgsConstructor
 public class MemberRepositoryImpl implements MemberRepository {

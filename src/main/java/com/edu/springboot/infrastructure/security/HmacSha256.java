@@ -7,6 +7,13 @@ import java.util.HexFormat;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: HmacSha256
+ * 책임: HmacSha256 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/security/overview.md](../../../../../../../../docs/security/overview.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 public final class HmacSha256 {
 
 	private HmacSha256() {

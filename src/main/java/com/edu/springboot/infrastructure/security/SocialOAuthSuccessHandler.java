@@ -24,6 +24,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: SocialOAuthSuccessHandler
+ * 책임: SocialOAuthSuccessHandler 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/security/overview.md](../../../../../../../../docs/security/overview.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Component
 @RequiredArgsConstructor
 public class SocialOAuthSuccessHandler implements AuthenticationSuccessHandler {

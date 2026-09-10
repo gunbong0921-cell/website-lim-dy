@@ -28,6 +28,13 @@ import com.edu.springboot.presentation.http.RequestHostname;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Hexaq
+ * 계층: Presentation
+ * 객체: FreeBoardController
+ * 책임: HTTP 입구. 검증·Application 호출·ApiResponse. Domain 객체 비노출
+ * 문서: [docs/technical/02-technical-specification.md](../../../../../../../../docs/technical/02-technical-specification.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @RestController
 @RequestMapping("/api/boards/free")
 @RequiredArgsConstructor

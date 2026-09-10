@@ -7,6 +7,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.edu.springboot.domain.member.VerificationStore;
 
+/**
+ * Hexaq
+ * 계층: Infrastructure
+ * 객체: InMemoryPhoneVerificationStore
+ * 책임: InMemoryPhoneVerificationStore 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/technical/04-redis.md](../../../../../../../../../docs/technical/04-redis.md) · [docs/technical/01-architecture.md](../../../../../../../../../docs/technical/01-architecture.md)
+ */
 public class InMemoryPhoneVerificationStore implements VerificationStore {
 
 	private static final String CODE_PREFIX = "PHONE_VERIFY:";

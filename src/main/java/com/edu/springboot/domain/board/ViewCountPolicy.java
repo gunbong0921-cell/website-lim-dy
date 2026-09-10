@@ -5,6 +5,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+/**
+ * Hexaq
+ * 계층: Domain
+ * 객체: ViewCountPolicy
+ * 책임: 도메인 규칙. HTTP·DB 모름
+ * 문서: [docs/features/07-boards.md](../../../../../../../../docs/features/07-boards.md) · [docs/features/08-views-likes-comments.md](../../../../../../../../docs/features/08-views-likes-comments.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 public class ViewCountPolicy {
 
 	private static final ZoneId ZONE = ZoneId.of("Asia/Seoul");

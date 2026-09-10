@@ -10,6 +10,13 @@ import com.edu.springboot.presentation.dto.ApiResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Hexaq
+ * 계층: Presentation
+ * 객체: GlobalExceptionHandler
+ * 책임: GlobalExceptionHandler 역할. 클린 아키텍처 계층을 지키며 문서의 객체를 구현
+ * 문서: [docs/technical/02-technical-specification.md](../../../../../../../../docs/technical/02-technical-specification.md) · [docs/technical/01-architecture.md](../../../../../../../../docs/technical/01-architecture.md)
+ */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
