@@ -36,6 +36,7 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.oracle.database.jdbc:ojdbc17'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	annotationProcessor 'org.projectlombok:lombok'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat-runtime'
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
@@ -67,4 +68,12 @@ tasks.register('npmBuild', Exec) {
 
 tasks.named('processResources') {
 	dependsOn 'npmBuild'
+}
+
+tasks.register('migrateOracleToMariaDb', JavaExec) {
+	group = 'migration'
+	description = 'Copy Oracle HEXAQ_* tables into MariaDB. See scripts/migrate-oracle-to-mariadb.ps1'
+	dependsOn compileJava
+	classpath = configurations.runtimeClasspath + files(sourceSets.main.java.classesDirectory)
+	mainClass = 'com.edu.springboot.infrastructure.persistence.migrate.OracleToMariaDbMigrator'
 }

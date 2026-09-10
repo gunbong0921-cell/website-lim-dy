@@ -5,7 +5,18 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: 'same-origin-assets',
+      transformIndexHtml(html) {
+        return html
+          .replaceAll('<script type="module" crossorigin', '<script type="module"')
+          .replaceAll('rel="stylesheet" crossorigin href="./assets', 'rel="stylesheet" href="./assets')
+          .replaceAll('rel="stylesheet" crossorigin href="/assets', 'rel="stylesheet" href="/assets')
+      },
+    },
+  ],
   // npm run build 실행시, outDir로 지정한 경로에 빌드된 결과물이 생성됨
   build: {
     outDir: fileURLToPath(

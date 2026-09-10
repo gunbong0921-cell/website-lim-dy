@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-import com.edu.springboot.domain.member.PhoneVerificationStore;
+import com.edu.springboot.domain.member.VerificationStore;
 import com.edu.springboot.infrastructure.persistence.memory.InMemoryPhoneVerificationStore;
 import com.edu.springboot.infrastructure.persistence.redis.RedisPhoneVerificationStore;
 
@@ -14,13 +14,13 @@ public class PhoneVerificationStoreConfig {
 
 	@Bean
 	@ConditionalOnProperty(name = "app.phone-verify.store", havingValue = "redis")
-	PhoneVerificationStore redisPhoneVerificationStore(StringRedisTemplate redis) {
+	VerificationStore redisPhoneVerificationStore(StringRedisTemplate redis) {
 		return new RedisPhoneVerificationStore(redis);
 	}
 
 	@Bean
 	@ConditionalOnProperty(name = "app.phone-verify.store", havingValue = "memory", matchIfMissing = true)
-	PhoneVerificationStore inMemoryPhoneVerificationStore() {
+	VerificationStore inMemoryPhoneVerificationStore() {
 		return new InMemoryPhoneVerificationStore();
 	}
 }

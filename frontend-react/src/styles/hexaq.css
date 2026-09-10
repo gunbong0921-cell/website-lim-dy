@@ -1633,3 +1633,12 @@ a.hx-social-icon {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.hx-hp {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

@@ -20,3 +20,11 @@ export function isMobilePhone(value) {
 export function isPersonalEmail(email) {
   return /@(gmail|naver|daum|hanmail|kakao|hotmail|yahoo|outlook)\./i.test(email || '')
 }
+
+export function isValidEmailFormat(email) {
+  const value = (email || '').trim()
+  if (!value || value.length > 100 || value.includes('..')) {
+    return false
+  }
+  return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(value)
+}

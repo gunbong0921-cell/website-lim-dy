@@ -1,9 +1,11 @@
 import { useCallback, useState } from 'react'
 import { memberApi } from '../services/api/memberApi'
+import { useRecaptcha } from './useRecaptcha'
 
 export function useSignUp() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
+  const { execute } = useRecaptcha()
 
   const checkId = useCallback(async (loginId) => {
     if (!loginId || !loginId.trim()) {
@@ -21,13 +23,14 @@ export function useSignUp() {
   const signUp = useCallback(async (payload) => {
     setLoading(true)
     try {
-      const res = await memberApi.signUp(payload)
+      const recaptchaToken = await execute('signup')
+      const res = await memberApi.signUp({ ...payload, recaptchaToken, website: payload.website ?? '' })
       setResult(res.data)
       return res
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [execute])
 
   const verifyEmail = useCallback((loginId, code) => memberApi.verifyEmail(loginId, code), [])
 

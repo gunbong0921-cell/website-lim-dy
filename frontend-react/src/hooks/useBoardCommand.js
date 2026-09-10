@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { boardApi } from '../services/api/boardApi'
+import { useRecaptcha } from './useRecaptcha'
 
 const writeByType = {
   free: (payload) => boardApi.writeFree(payload),
@@ -20,7 +21,14 @@ const deleteByType = {
 }
 
 export function useBoardCommand(type, solution) {
-  const write = useCallback((payload) => writeByType[type](payload, solution), [type, solution])
+  const { execute } = useRecaptcha()
+  const write = useCallback(async (payload) => {
+    if (type === 'free') {
+      const recaptchaToken = await execute('board_write_free')
+      return writeByType.free({ ...payload, recaptchaToken })
+    }
+    return writeByType[type](payload, solution)
+  }, [execute, type, solution])
   const update = useCallback((id, payload) => updateByType[type](id, payload), [type])
   const remove = useCallback((id, password) => deleteByType[type](id, password), [type])
   return { write, update, remove }

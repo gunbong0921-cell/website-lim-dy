@@ -6,13 +6,17 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.edu.springboot.application.anomaly.RememberSignupService;
+import com.edu.springboot.application.captcha.VerifyCaptchaService;
 import com.edu.springboot.application.common.BusinessException;
 import com.edu.springboot.application.member.dto.BusinessVerifyCommand;
 import com.edu.springboot.application.member.dto.MemberMapper;
 import com.edu.springboot.application.member.dto.MemberResponse;
 import com.edu.springboot.application.member.dto.SignUpCommand;
 import com.edu.springboot.application.member.dto.SignUpResult;
+import com.edu.springboot.domain.captcha.CaptchaAction;
 import com.edu.springboot.domain.mail.MailSender;
+import com.edu.springboot.domain.member.HoneypotPolicy;
 import com.edu.springboot.domain.member.Member;
 import com.edu.springboot.domain.member.MemberRepository;
 import com.edu.springboot.domain.member.MemberRole;
@@ -20,7 +24,7 @@ import com.edu.springboot.domain.member.MemberType;
 import com.edu.springboot.domain.member.PasswordEncryptor;
 import com.edu.springboot.domain.member.PasswordPolicy;
 import com.edu.springboot.domain.member.PhoneVerificationPolicy;
-import com.edu.springboot.domain.member.PhoneVerificationStore;
+import com.edu.springboot.domain.member.VerificationStore;
 import com.edu.springboot.domain.member.VerificationChannel;
 
 import lombok.RequiredArgsConstructor;
@@ -35,8 +39,12 @@ public class SignUpService {
 	private final PasswordPolicy passwordPolicy;
 	private final MailSender mailSender;
 	private final VerifyBusinessRegistrationService verifyBusinessRegistrationService;
-	private final PhoneVerificationStore phoneVerificationStore;
+	private final VerificationStore phoneVerificationStore;
 	private final PhoneVerificationPolicy phoneVerificationPolicy;
+	private final VerifyCaptchaService verifyCaptchaService;
+	private final HoneypotPolicy honeypotPolicy;
+	private final RejectDisposableEmailService rejectDisposableEmailService;
+	private final RememberSignupService rememberSignupService;
 
 	public boolean isLoginIdAvailable(String loginId) {
 		if (loginId == null || loginId.isBlank()) {
@@ -46,18 +54,19 @@ public class SignUpService {
 	}
 
 	public boolean isEmailAvailable(String email) {
-		if (email == null || email.isBlank()) {
-			throw new BusinessException("이메일을 입력한 뒤 중복확인 해주세요.");
-		}
-		String value = email.trim();
+		String value = rejectDisposableEmailService.requireAllowed(email);
 		return !memberRepository.existsByEmail(value) && !memberRepository.existsByLoginId(value);
 	}
 
-	public SignUpResult signUp(SignUpCommand command) {
+	public SignUpResult signUp(SignUpCommand command, String recaptchaToken, String clientIp, String requestHost) {
+		if (honeypotPolicy.tripped(command.website())) {
+			throw new BusinessException("요청을 처리할 수 없습니다.");
+		}
+		verifyCaptchaService.require(recaptchaToken, CaptchaAction.SIGNUP, clientIp, requestHost);
 		MemberType type = MemberType.from(command.memberType());
 		VerificationChannel channel = VerificationChannel.from(command.verificationChannel());
 		validate(command, type);
-		String email = command.email().trim();
+		String email = rejectDisposableEmailService.requireAllowed(command.email());
 		if (memberRepository.existsByLoginId(email) || memberRepository.existsByEmail(email)) {
 			throw new BusinessException("이미 등록된 이메일입니다.");
 		}
@@ -103,6 +112,7 @@ public class SignUpService {
 			member.setCompany(blankToNull(command.jobTitle()));
 		}
 		memberRepository.save(member);
+		rememberSignupService.remember(member.getLoginId());
 		return new SignUpResult(member.getId(), true, null, channel.name());
 	}
 
@@ -139,9 +149,7 @@ public class SignUpService {
 			|| isBlank(command.phone())) {
 			throw new BusinessException("필수 항목을 모두 입력하세요.");
 		}
-		if (!command.email().contains("@") || command.email().length() > 100) {
-			throw new BusinessException("이메일 형식이 올바르지 않습니다.");
-		}
+		rejectDisposableEmailService.requireAllowed(command.email());
 		if (!command.password().equals(command.passwordConfirm())) {
 			throw new BusinessException("비밀번호가 일치하지 않습니다.");
 		}

@@ -3,9 +3,11 @@ package com.edu.springboot.application.member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.edu.springboot.application.captcha.VerifyCaptchaService;
 import com.edu.springboot.application.common.BusinessException;
 import com.edu.springboot.application.member.dto.MemberMapper;
 import com.edu.springboot.application.member.dto.MemberResponse;
+import com.edu.springboot.domain.captcha.CaptchaAction;
 import com.edu.springboot.domain.member.Member;
 import com.edu.springboot.domain.member.MemberRepository;
 import com.edu.springboot.domain.member.PasswordEncryptor;
@@ -19,8 +21,11 @@ public class LoginService {
 
 	private final MemberRepository memberRepository;
 	private final PasswordEncryptor passwordEncryptor;
+	private final VerifyCaptchaService verifyCaptchaService;
 
-	public MemberResponse authenticate(String loginId, String password) {
+	public MemberResponse authenticate(String loginId, String password, String recaptchaToken, String clientIp,
+		String requestHost) {
+		verifyCaptchaService.require(recaptchaToken, CaptchaAction.LOGIN, clientIp, requestHost);
 		Member member = memberRepository.findByLoginId(loginId)
 			.or(() -> memberRepository.findByEmail(loginId))
 			.orElseThrow(() -> new BusinessException("아이디 또는 비밀번호가 올바르지 않습니다."));

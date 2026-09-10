@@ -14,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.edu.springboot.domain.security.ClientAddressPolicy;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +28,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 	private static final String BODY = "{\"success\":false,\"data\":null,\"message\":\"요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.\"}";
 	private static final int MAX_KEYS = 20_000;
 
-	private final ClientIpResolver clientIpResolver;
+	private final ClientAddressPolicy clientAddressPolicy;
 	private final boolean enabled;
 	private final long windowMs;
 	private final int apiLimit;
@@ -35,14 +37,14 @@ public class RateLimitFilter extends OncePerRequestFilter {
 	private final ConcurrentHashMap<String, Deque<Long>> hits = new ConcurrentHashMap<>();
 
 	public RateLimitFilter(
-		ClientIpResolver clientIpResolver,
+		ClientAddressPolicy clientAddressPolicy,
 		@Value("${app.security.rate-limit.enabled:true}") boolean enabled,
 		@Value("${app.security.rate-limit.window-seconds:60}") int windowSeconds,
 		@Value("${app.security.rate-limit.api-per-window:60}") int apiLimit,
 		@Value("${app.security.rate-limit.auth-per-window:10}") int authLimit,
 		@Value("${app.security.rate-limit.page-per-window:300}") int pageLimit
 	) {
-		this.clientIpResolver = clientIpResolver;
+		this.clientAddressPolicy = clientAddressPolicy;
 		this.enabled = enabled;
 		this.windowMs = Math.max(1, windowSeconds) * 1000L;
 		this.apiLimit = Math.max(1, apiLimit);
@@ -64,7 +66,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 		throws ServletException, IOException {
 		String path = request.getRequestURI();
 		int limit = limitFor(path);
-		String key = limit + ":" + clientIpResolver.resolve(request) + ":" + bucket(path);
+		String key = limit + ":" + clientIp(request) + ":" + bucket(path);
 		if (!allow(key, limit)) {
 			response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -127,6 +129,14 @@ public class RateLimitFilter extends OncePerRequestFilter {
 			|| path.endsWith(".woff2")
 			|| path.endsWith(".ttf")
 			|| "/index.html".equals(path);
+	}
+
+	private String clientIp(HttpServletRequest request) {
+		return clientAddressPolicy.resolve(
+			request.getRemoteAddr(),
+			request.getHeader("X-Forwarded-For"),
+			request.getHeader("X-Real-IP")
+		);
 	}
 
 	private boolean allow(String key, int limit) {

@@ -47,7 +47,7 @@ public class SocialOAuthSuccessHandler implements AuthenticationSuccessHandler {
 		try {
 			SocialProfile profile = profileOf(authentication, provider);
 			MemberResponse member = socialLoginService.loginOrSignUp(profile);
-			memberSessionBinder.bind(request, response, member);
+			memberSessionBinder.bind(request, response, new SessionPrincipal(member.loginId(), member.admin()));
 			String target = member.needsPhone() ? "/#/mypage" : successRedirect;
 			response.sendRedirect(target);
 		} catch (BusinessException ex) {

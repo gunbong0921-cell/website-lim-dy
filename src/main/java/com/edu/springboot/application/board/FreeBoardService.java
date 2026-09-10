@@ -7,11 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.edu.springboot.application.board.dto.BoardDetailResponse;
 import com.edu.springboot.application.board.dto.BoardSummaryResponse;
+import com.edu.springboot.application.captcha.VerifyCaptchaService;
 import com.edu.springboot.application.common.BusinessException;
 import com.edu.springboot.application.common.PageResponse;
 import com.edu.springboot.domain.board.FreeBoard;
 import com.edu.springboot.domain.board.FreeBoardRepository;
 import com.edu.springboot.domain.board.ViewCountPolicy;
+import com.edu.springboot.domain.captcha.CaptchaAction;
 import com.edu.springboot.domain.member.PasswordEncryptor;
 
 @Service
@@ -21,15 +23,18 @@ public class FreeBoardService {
 	private final FreeBoardRepository freeBoardRepository;
 	private final PasswordEncryptor passwordEncryptor;
 	private final ViewCountPolicy viewCountPolicy;
+	private final VerifyCaptchaService verifyCaptchaService;
 
 	public FreeBoardService(
 		FreeBoardRepository freeBoardRepository,
 		PasswordEncryptor passwordEncryptor,
-		ViewCountPolicy viewCountPolicy
+		ViewCountPolicy viewCountPolicy,
+		VerifyCaptchaService verifyCaptchaService
 	) {
 		this.freeBoardRepository = freeBoardRepository;
 		this.passwordEncryptor = passwordEncryptor;
 		this.viewCountPolicy = viewCountPolicy;
+		this.verifyCaptchaService = verifyCaptchaService;
 	}
 
 	@Transactional(readOnly = true)
@@ -52,7 +57,9 @@ public class FreeBoardService {
 		return toDetail(board, increased);
 	}
 
-	public Long write(String title, String content, String writer, String password) {
+	public Long write(String title, String content, String writer, String password, String recaptchaToken,
+		String clientIp, String requestHost) {
+		verifyCaptchaService.require(recaptchaToken, CaptchaAction.BOARD_WRITE_FREE, clientIp, requestHost);
 		requireText(title, "제목을 입력하세요.");
 		requireText(content, "내용을 입력하세요.");
 		requireText(writer, "작성자를 입력하세요.");

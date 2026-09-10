@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.edu.springboot.application.anomaly.RememberSignupService;
 import com.edu.springboot.application.common.BusinessException;
 import com.edu.springboot.application.member.dto.MemberMapper;
 import com.edu.springboot.application.member.dto.MemberResponse;
@@ -30,6 +31,7 @@ public class SocialLoginService {
 	private final KakaoFriendRepository kakaoFriendRepository;
 	private final KakaoTalkGateway kakaoTalkGateway;
 	private final PasswordEncryptor passwordEncryptor;
+	private final RememberSignupService rememberSignupService;
 
 	public MemberResponse loginOrSignUp(SocialProfile profile) {
 		AuthProvider provider = AuthProvider.from(profile.provider());
@@ -87,6 +89,9 @@ public class SocialLoginService {
 		member.markEmailVerified();
 		member.applySocialProfile(trim(profile.name()), trim(profile.profileImage()));
 		Member saved = memberRepository.save(member);
+		if (newMember) {
+			rememberSignupService.remember(saved.getLoginId());
+		}
 		if (provider.kakao()) {
 			kakaoFriendRepository.replaceAll(saved.getId(), toFriends(saved.getId(), profile.friends()));
 			if (newMember && !saved.kakaoWelcomeSent()) {

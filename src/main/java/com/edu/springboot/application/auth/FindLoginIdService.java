@@ -3,7 +3,9 @@ package com.edu.springboot.application.auth;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.edu.springboot.application.captcha.VerifyCaptchaService;
 import com.edu.springboot.application.common.BusinessException;
+import com.edu.springboot.domain.captcha.CaptchaAction;
 import com.edu.springboot.domain.mail.MailSender;
 import com.edu.springboot.domain.member.Member;
 import com.edu.springboot.domain.member.MemberRepository;
@@ -17,8 +19,10 @@ public class FindLoginIdService {
 
 	private final MemberRepository memberRepository;
 	private final MailSender mailSender;
+	private final VerifyCaptchaService verifyCaptchaService;
 
-	public FindLoginIdResult sendLoginId(String email) {
+	public FindLoginIdResult sendLoginId(String email, String recaptchaToken, String clientIp, String requestHost) {
+		verifyCaptchaService.require(recaptchaToken, CaptchaAction.FORGOT_ID, clientIp, requestHost);
 		if (email == null || email.isBlank()) {
 			throw new BusinessException("이메일을 입력하세요.");
 		}

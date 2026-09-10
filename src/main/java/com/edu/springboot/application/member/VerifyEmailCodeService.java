@@ -5,9 +5,9 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.edu.springboot.application.common.BusinessException;
-import com.edu.springboot.application.member.dto.VerifyPhoneCodeResult;
+import com.edu.springboot.application.member.dto.VerifyCodeResult;
 import com.edu.springboot.domain.member.PhoneVerificationPolicy;
-import com.edu.springboot.domain.member.PhoneVerificationStore;
+import com.edu.springboot.domain.member.VerificationStore;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,10 +15,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class VerifyEmailCodeService {
 
-	private final PhoneVerificationStore phoneVerificationStore;
+	private final VerificationStore phoneVerificationStore;
 	private final PhoneVerificationPolicy phoneVerificationPolicy;
 
-	public VerifyPhoneCodeResult verify(String rawEmail, String code) {
+	public VerifyCodeResult verify(String rawEmail, String code) {
 		String email = rawEmail == null ? "" : rawEmail.trim().toLowerCase();
 		if (!email.contains("@") || email.length() > 100) {
 			throw new BusinessException("이메일 형식이 올바르지 않습니다.");
@@ -35,6 +35,6 @@ public class VerifyEmailCodeService {
 		phoneVerificationStore.deleteCode(key);
 		String token = UUID.randomUUID().toString().replace("-", "");
 		phoneVerificationStore.saveToken(token, key, PhoneVerificationPolicy.TOKEN_TTL);
-		return new VerifyPhoneCodeResult(token, email);
+		return new VerifyCodeResult(token, email);
 	}
 }

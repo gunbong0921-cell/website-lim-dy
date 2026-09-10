@@ -1,12 +1,14 @@
 import { useCallback } from 'react'
 import { memberApi } from '../services/api/memberApi'
 import { useAuthStore } from '../store/authStore'
+import { useRecaptcha } from './useRecaptcha'
 
 export function useAuth() {
   const member = useAuthStore((s) => s.member)
   const ready = useAuthStore((s) => s.ready)
   const setMember = useAuthStore((s) => s.setMember)
   const clear = useAuthStore((s) => s.clear)
+  const { execute } = useRecaptcha()
 
   const bootstrap = useCallback(async () => {
     try {
@@ -18,10 +20,11 @@ export function useAuth() {
   }, [setMember, clear])
 
   const login = useCallback(async (loginId, password) => {
-    const res = await memberApi.login(loginId, password)
+    const recaptchaToken = await execute('login')
+    const res = await memberApi.login(loginId, password, recaptchaToken)
     setMember(res.data)
     return res
-  }, [setMember])
+  }, [execute, setMember])
 
   const logout = useCallback(async () => {
     await memberApi.logout()
@@ -35,8 +38,14 @@ export function useAuth() {
   }, [setMember])
 
   const changePassword = useCallback((payload) => memberApi.changePassword(payload), [])
-  const findLoginId = useCallback((email) => memberApi.findLoginId(email), [])
-  const forgotPassword = useCallback((email) => memberApi.forgotPassword(email), [])
+  const findLoginId = useCallback(async (email) => {
+    const recaptchaToken = await execute('forgot_id')
+    return memberApi.findLoginId(email, recaptchaToken)
+  }, [execute])
+  const forgotPassword = useCallback(async (email) => {
+    const recaptchaToken = await execute('forgot_password')
+    return memberApi.forgotPassword(email, recaptchaToken)
+  }, [execute])
 
   return {
     member,

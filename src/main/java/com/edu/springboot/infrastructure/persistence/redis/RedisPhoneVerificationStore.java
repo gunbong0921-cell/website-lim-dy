@@ -6,9 +6,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-import com.edu.springboot.domain.member.PhoneVerificationStore;
+import com.edu.springboot.domain.member.VerificationStore;
 
-public class RedisPhoneVerificationStore implements PhoneVerificationStore {
+public class RedisPhoneVerificationStore implements VerificationStore {
 
 	private static final String CODE_PREFIX = "PHONE_VERIFY:";
 	private static final String COOLDOWN_PREFIX = "PHONE_VERIFY_COOLDOWN:";
@@ -21,29 +21,29 @@ public class RedisPhoneVerificationStore implements PhoneVerificationStore {
 	}
 
 	@Override
-	public void saveCode(String phone, String code, Duration ttl) {
-		redis.opsForValue().set(CODE_PREFIX + phone, code, ttl);
+	public void saveCode(String key, String code, Duration ttl) {
+		redis.opsForValue().set(CODE_PREFIX + key, code, ttl);
 	}
 
 	@Override
-	public Optional<String> findCode(String phone) {
-		return Optional.ofNullable(redis.opsForValue().get(CODE_PREFIX + phone));
+	public Optional<String> findCode(String key) {
+		return Optional.ofNullable(redis.opsForValue().get(CODE_PREFIX + key));
 	}
 
 	@Override
-	public void deleteCode(String phone) {
-		redis.delete(CODE_PREFIX + phone);
+	public void deleteCode(String key) {
+		redis.delete(CODE_PREFIX + key);
 	}
 
 	@Override
-	public long cooldownRemainingSeconds(String phone) {
-		Long ttl = redis.getExpire(COOLDOWN_PREFIX + phone, TimeUnit.SECONDS);
+	public long cooldownRemainingSeconds(String key) {
+		Long ttl = redis.getExpire(COOLDOWN_PREFIX + key, TimeUnit.SECONDS);
 		return ttl == null || ttl < 0 ? 0 : ttl;
 	}
 
 	@Override
-	public void startCooldown(String phone, Duration ttl) {
-		redis.opsForValue().set(COOLDOWN_PREFIX + phone, "1", ttl);
+	public void startCooldown(String key, Duration ttl) {
+		redis.opsForValue().set(COOLDOWN_PREFIX + key, "1", ttl);
 	}
 
 	@Override
@@ -69,8 +69,8 @@ public class RedisPhoneVerificationStore implements PhoneVerificationStore {
 	}
 
 	@Override
-	public void saveToken(String token, String phone, Duration ttl) {
-		redis.opsForValue().set(TOKEN_PREFIX + token, phone, ttl);
+	public void saveToken(String token, String targetKey, Duration ttl) {
+		redis.opsForValue().set(TOKEN_PREFIX + token, targetKey, ttl);
 	}
 
 	@Override

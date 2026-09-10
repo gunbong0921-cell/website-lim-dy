@@ -2,10 +2,12 @@ package com.edu.springboot.application.member;
 
 import org.springframework.stereotype.Service;
 
+import com.edu.springboot.application.captcha.VerifyCaptchaService;
 import com.edu.springboot.application.common.BusinessException;
-import com.edu.springboot.application.member.dto.SendPhoneVerificationResult;
+import com.edu.springboot.application.member.dto.SendVerificationResult;
+import com.edu.springboot.domain.captcha.CaptchaAction;
 import com.edu.springboot.domain.member.PhoneVerificationPolicy;
-import com.edu.springboot.domain.member.PhoneVerificationStore;
+import com.edu.springboot.domain.member.VerificationStore;
 import com.edu.springboot.domain.sms.SmsSender;
 
 import lombok.RequiredArgsConstructor;
@@ -14,11 +16,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SendPhoneVerificationService {
 
-	private final PhoneVerificationStore phoneVerificationStore;
+	private final VerificationStore phoneVerificationStore;
 	private final PhoneVerificationPolicy phoneVerificationPolicy;
 	private final SmsSender smsSender;
+	private final VerifyCaptchaService verifyCaptchaService;
 
-	public SendPhoneVerificationResult send(String rawPhone, String clientIp) {
+	public SendVerificationResult send(String rawPhone, String clientIp, String recaptchaToken, String requestHost) {
+		verifyCaptchaService.require(recaptchaToken, CaptchaAction.PHONE_SEND_CODE, clientIp, requestHost);
 		try {
 			return doSend(rawPhone, clientIp);
 		} catch (BusinessException ex) {
@@ -28,7 +32,7 @@ public class SendPhoneVerificationService {
 		}
 	}
 
-	private SendPhoneVerificationResult doSend(String rawPhone, String clientIp) {
+	private SendVerificationResult doSend(String rawPhone, String clientIp) {
 		String phone = phoneVerificationPolicy.normalize(rawPhone);
 		if (!phoneVerificationPolicy.validMobile(phone)) {
 			throw new BusinessException("휴대폰 번호는 하이픈 없이 숫자 10~11자리로 입력하세요.");
@@ -57,7 +61,7 @@ public class SendPhoneVerificationService {
 			phoneVerificationPolicy.dailyIpKey(clientIp),
 			phoneVerificationPolicy.ttlUntilMidnight()
 		);
-		return new SendPhoneVerificationResult(
+		return new SendVerificationResult(
 			(int) PhoneVerificationPolicy.COOLDOWN.toSeconds(),
 			(int) PhoneVerificationPolicy.CODE_TTL.toSeconds()
 		);

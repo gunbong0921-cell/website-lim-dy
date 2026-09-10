@@ -84,6 +84,10 @@ public class Member {
 	private MemberRole role = MemberRole.USER;
 
 	@Enumerated(EnumType.STRING)
+	@Column(name = "trust_status", nullable = false, length = 20)
+	private MemberTrustStatus trustStatus = MemberTrustStatus.ACTIVE;
+
+	@Enumerated(EnumType.STRING)
 	@Column(name = "oauth_provider", length = 20)
 	private AuthProvider oauthProvider = AuthProvider.LOCAL;
 
@@ -157,6 +161,18 @@ public class Member {
 
 	public void assignRole(MemberRole memberRole) {
 		this.role = memberRole == null ? MemberRole.USER : memberRole;
+	}
+
+	public MemberTrustStatus trustStatus() {
+		return trustStatus == null ? MemberTrustStatus.ACTIVE : trustStatus;
+	}
+
+	public boolean suspicious() {
+		return trustStatus().suspicious();
+	}
+
+	public void markSuspicious() {
+		this.trustStatus = MemberTrustStatus.SUSPICIOUS;
 	}
 
 	public boolean isEmailVerified() {
@@ -261,6 +277,9 @@ public class Member {
 		}
 		if (role == null) {
 			role = MemberRole.USER;
+		}
+		if (trustStatus == null) {
+			trustStatus = MemberTrustStatus.ACTIVE;
 		}
 		if (memberType == null) {
 			memberType = MemberType.INDIVIDUAL;

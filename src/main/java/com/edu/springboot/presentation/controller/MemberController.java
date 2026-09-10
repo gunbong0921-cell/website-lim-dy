@@ -20,6 +20,10 @@ import com.edu.springboot.application.member.dto.MemberResponse;
 import com.edu.springboot.application.member.dto.SignUpCommand;
 import com.edu.springboot.application.member.dto.SignUpResult;
 import com.edu.springboot.presentation.dto.ApiResponse;
+import com.edu.springboot.presentation.http.RequestClientIp;
+import com.edu.springboot.presentation.http.RequestHostname;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +35,8 @@ public class MemberController {
 	private final SignUpService signUpService;
 	private final VerifyBusinessRegistrationService verifyBusinessRegistrationService;
 	private final MemberProfileService memberProfileService;
+	private final RequestClientIp requestClientIp;
+	private final RequestHostname requestHostname;
 
 	@GetMapping("/check-id")
 	public ApiResponse<Map<String, Boolean>> checkId(@RequestParam("loginId") String loginId) {
@@ -55,8 +61,9 @@ public class MemberController {
 	}
 
 	@PostMapping("/signup")
-	public ApiResponse<SignUpResult> signUp(@RequestBody SignUpCommand command) {
-		SignUpResult result = signUpService.signUp(command);
+	public ApiResponse<SignUpResult> signUp(@RequestBody SignUpRequest request, HttpServletRequest httpRequest) {
+		SignUpResult result = signUpService.signUp(request.toCommand(), request.recaptchaToken(),
+			requestClientIp.resolve(httpRequest), requestHostname.resolve(httpRequest));
 		String kind = "PHONE".equals(result.verificationChannel()) ? "휴대폰" : "이메일";
 		return ApiResponse.ok(result, kind + " 인증이 완료된 계정으로 가입되었습니다. 로그인하세요.");
 	}
@@ -107,5 +114,54 @@ public class MemberController {
 	}
 
 	public record PasswordRequest(String currentPassword, String newPassword) {
+	}
+
+	public record SignUpRequest(
+		String memberType,
+		String email,
+		String password,
+		String passwordConfirm,
+		String name,
+		String phone,
+		String address,
+		String jobTitle,
+		String businessNumber,
+		String companyName,
+		String ceoName,
+		String workplaceAddress,
+		String openingDate,
+		Boolean termsService,
+		Boolean termsPrivacy,
+		Boolean termsMarketing,
+		Boolean termsCorporate,
+		String verificationChannel,
+		String phoneVerificationToken,
+		String recaptchaToken,
+		String website
+	) {
+		private SignUpCommand toCommand() {
+			return new SignUpCommand(
+				memberType,
+				email,
+				password,
+				passwordConfirm,
+				name,
+				phone,
+				address,
+				jobTitle,
+				businessNumber,
+				companyName,
+				ceoName,
+				workplaceAddress,
+				openingDate,
+				termsService,
+				termsPrivacy,
+				termsMarketing,
+				termsCorporate,
+				verificationChannel,
+				phoneVerificationToken,
+				website
+			);
+		}
 	}
 }

@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.edu.springboot.application.member.SendEmailVerificationService;
 import com.edu.springboot.application.member.VerifyEmailCodeService;
-import com.edu.springboot.application.member.dto.SendPhoneVerificationResult;
-import com.edu.springboot.application.member.dto.VerifyPhoneCodeResult;
-import com.edu.springboot.infrastructure.security.ClientIpResolver;
+import com.edu.springboot.application.member.dto.SendVerificationResult;
+import com.edu.springboot.application.member.dto.VerifyCodeResult;
 import com.edu.springboot.presentation.dto.ApiResponse;
+import com.edu.springboot.presentation.http.RequestClientIp;
+import com.edu.springboot.presentation.http.RequestHostname;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,23 +23,24 @@ public class EmailVerificationController {
 
 	private final SendEmailVerificationService sendEmailVerificationService;
 	private final VerifyEmailCodeService verifyEmailCodeService;
-	private final ClientIpResolver clientIpResolver;
+	private final RequestClientIp requestClientIp;
+	private final RequestHostname requestHostname;
 
 	@PostMapping("/send-code")
-	public ApiResponse<SendPhoneVerificationResult> sendCode(@RequestBody EmailRequest request,
+	public ApiResponse<SendVerificationResult> sendCode(@RequestBody EmailRequest request,
 		HttpServletRequest httpRequest) {
-		SendPhoneVerificationResult data = sendEmailVerificationService.send(request.email(),
-			clientIpResolver.resolve(httpRequest));
+		SendVerificationResult data = sendEmailVerificationService.send(request.email(),
+			requestClientIp.resolve(httpRequest), request.recaptchaToken(), requestHostname.resolve(httpRequest));
 		return ApiResponse.ok(data, "인증번호를 이메일로 보냈습니다. 3분 안에 입력해 주세요.");
 	}
 
 	@PostMapping("/verify")
-	public ApiResponse<VerifyPhoneCodeResult> verify(@RequestBody EmailVerifyRequest request) {
-		VerifyPhoneCodeResult data = verifyEmailCodeService.verify(request.email(), request.code());
+	public ApiResponse<VerifyCodeResult> verify(@RequestBody EmailVerifyRequest request) {
+		VerifyCodeResult data = verifyEmailCodeService.verify(request.email(), request.code());
 		return ApiResponse.ok(data, "이메일 인증이 완료되었습니다.");
 	}
 
-	public record EmailRequest(String email) {
+	public record EmailRequest(String email, String recaptchaToken) {
 	}
 
 	public record EmailVerifyRequest(String email, String code) {

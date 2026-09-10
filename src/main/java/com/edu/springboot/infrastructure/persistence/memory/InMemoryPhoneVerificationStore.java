@@ -5,9 +5,9 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.edu.springboot.domain.member.PhoneVerificationStore;
+import com.edu.springboot.domain.member.VerificationStore;
 
-public class InMemoryPhoneVerificationStore implements PhoneVerificationStore {
+public class InMemoryPhoneVerificationStore implements VerificationStore {
 
 	private static final String CODE_PREFIX = "PHONE_VERIFY:";
 	private static final String COOLDOWN_PREFIX = "PHONE_VERIFY_COOLDOWN:";
@@ -16,33 +16,33 @@ public class InMemoryPhoneVerificationStore implements PhoneVerificationStore {
 	private final ConcurrentHashMap<String, Entry> values = new ConcurrentHashMap<>();
 
 	@Override
-	public void saveCode(String phone, String code, Duration ttl) {
-		put(CODE_PREFIX + phone, code, ttl);
+	public void saveCode(String key, String code, Duration ttl) {
+		put(CODE_PREFIX + key, code, ttl);
 	}
 
 	@Override
-	public Optional<String> findCode(String phone) {
-		return get(CODE_PREFIX + phone);
+	public Optional<String> findCode(String key) {
+		return get(CODE_PREFIX + key);
 	}
 
 	@Override
-	public void deleteCode(String phone) {
-		values.remove(CODE_PREFIX + phone);
+	public void deleteCode(String key) {
+		values.remove(CODE_PREFIX + key);
 	}
 
 	@Override
-	public long cooldownRemainingSeconds(String phone) {
-		Entry entry = values.get(COOLDOWN_PREFIX + phone);
+	public long cooldownRemainingSeconds(String key) {
+		Entry entry = values.get(COOLDOWN_PREFIX + key);
 		if (entry == null || entry.expired()) {
-			values.remove(COOLDOWN_PREFIX + phone);
+			values.remove(COOLDOWN_PREFIX + key);
 			return 0;
 		}
 		return Math.max(0, Duration.between(Instant.now(), entry.expires).toSeconds());
 	}
 
 	@Override
-	public void startCooldown(String phone, Duration ttl) {
-		put(COOLDOWN_PREFIX + phone, "1", ttl);
+	public void startCooldown(String key, Duration ttl) {
+		put(COOLDOWN_PREFIX + key, "1", ttl);
 	}
 
 	@Override
@@ -74,8 +74,8 @@ public class InMemoryPhoneVerificationStore implements PhoneVerificationStore {
 	}
 
 	@Override
-	public void saveToken(String token, String phone, Duration ttl) {
-		put(TOKEN_PREFIX + token, phone, ttl);
+	public void saveToken(String token, String targetKey, Duration ttl) {
+		put(TOKEN_PREFIX + token, targetKey, ttl);
 	}
 
 	@Override

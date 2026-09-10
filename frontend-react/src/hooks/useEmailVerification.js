@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { memberApi } from '../services/api/memberApi'
+import { useRecaptcha } from './useRecaptcha'
 
 export function useEmailVerification() {
+  const { execute } = useRecaptcha()
   const [verified, setVerified] = useState(false)
   const [token, setToken] = useState('')
   const [sent, setSent] = useState(false)
@@ -42,7 +44,8 @@ export function useEmailVerification() {
     }
     setLoading(true)
     try {
-      const res = await memberApi.sendEmailCode(email)
+      const recaptchaToken = await execute('email_send_code')
+      const res = await memberApi.sendEmailCode(email, recaptchaToken)
       setSent(true)
       setVerified(false)
       setToken('')
@@ -51,7 +54,7 @@ export function useEmailVerification() {
     } finally {
       setLoading(false)
     }
-  }, [startCooldown])
+  }, [execute, startCooldown])
 
   const verify = useCallback(async (email, code) => {
     if (!code || !/^\d{6}$/.test(code.trim())) {

@@ -5,9 +5,9 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.edu.springboot.application.common.BusinessException;
-import com.edu.springboot.application.member.dto.VerifyPhoneCodeResult;
+import com.edu.springboot.application.member.dto.VerifyCodeResult;
 import com.edu.springboot.domain.member.PhoneVerificationPolicy;
-import com.edu.springboot.domain.member.PhoneVerificationStore;
+import com.edu.springboot.domain.member.VerificationStore;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,10 +15,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class VerifyPhoneCodeService {
 
-	private final PhoneVerificationStore phoneVerificationStore;
+	private final VerificationStore phoneVerificationStore;
 	private final PhoneVerificationPolicy phoneVerificationPolicy;
 
-	public VerifyPhoneCodeResult verify(String rawPhone, String code) {
+	public VerifyCodeResult verify(String rawPhone, String code) {
 		String phone = phoneVerificationPolicy.normalize(rawPhone);
 		if (!phoneVerificationPolicy.validMobile(phone)) {
 			throw new BusinessException("휴대폰 번호는 하이픈 없이 숫자 10~11자리로 입력하세요.");
@@ -34,6 +34,6 @@ public class VerifyPhoneCodeService {
 		phoneVerificationStore.deleteCode(phone);
 		String token = UUID.randomUUID().toString().replace("-", "");
 		phoneVerificationStore.saveToken(token, phone, PhoneVerificationPolicy.TOKEN_TTL);
-		return new VerifyPhoneCodeResult(token, phone);
+		return new VerifyCodeResult(token, phone);
 	}
 }

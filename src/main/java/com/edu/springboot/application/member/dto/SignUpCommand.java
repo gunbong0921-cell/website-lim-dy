@@ -19,6 +19,7 @@ public record SignUpCommand(
 	Boolean termsMarketing,
 	Boolean termsCorporate,
 	String verificationChannel,
-	String phoneVerificationToken
+	String phoneVerificationToken,
+	String website
 ) {
 }

@@ -7,11 +7,11 @@
 			solution = #{solution}
 			<if test="keyword != null and keyword != ''">
 				<choose>
-					<when test="searchType == 'title'">AND title LIKE '%' || #{keyword} || '%'</when>
-					<when test="searchType == 'content'">AND content LIKE '%' || #{keyword} || '%'</when>
-					<when test="searchType == 'writer'">AND writer LIKE '%' || #{keyword} || '%'</when>
+					<when test="searchType == 'title'">AND title LIKE CONCAT(CONCAT('%', #{keyword}), '%')</when>
+					<when test="searchType == 'content'">AND content LIKE CONCAT(CONCAT('%', #{keyword}), '%')</when>
+					<when test="searchType == 'writer'">AND writer LIKE CONCAT(CONCAT('%', #{keyword}), '%')</when>
 					<otherwise>
-						AND (title LIKE '%' || #{keyword} || '%' OR content LIKE '%' || #{keyword} || '%')
+						AND (title LIKE CONCAT(CONCAT('%', #{keyword}), '%') OR content LIKE CONCAT(CONCAT('%', #{keyword}), '%'))
 					</otherwise>
 				</choose>
 			</if>
@@ -20,7 +20,7 @@
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
 		INSERT INTO HEXAQ_QNA_BOARD (title, content, writer, solution, visit_count, like_count, created_at)
-		VALUES (#{title}, #{content, jdbcType=CLOB}, #{writer}, #{solution}, 0, 0, #{createdAt})
+		VALUES (#{title}, #{content, jdbcType=LONGVARCHAR}, #{writer}, #{solution}, 0, 0, #{createdAt})
 	</insert>
 
 	<select id="findById" resultType="com.edu.springboot.domain.board.QnaBoard">
@@ -30,7 +30,7 @@
 
 	<update id="update">
 		UPDATE HEXAQ_QNA_BOARD
-		SET title = #{title}, content = #{content, jdbcType=CLOB}, updated_at = #{updatedAt}
+		SET title = #{title}, content = #{content, jdbcType=LONGVARCHAR}, updated_at = #{updatedAt}
 		WHERE id = #{id}
 	</update>
 

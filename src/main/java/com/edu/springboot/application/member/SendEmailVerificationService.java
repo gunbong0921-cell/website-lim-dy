@@ -2,12 +2,14 @@ package com.edu.springboot.application.member;
 
 import org.springframework.stereotype.Service;
 
+import com.edu.springboot.application.captcha.VerifyCaptchaService;
 import com.edu.springboot.application.common.BusinessException;
-import com.edu.springboot.application.member.dto.SendPhoneVerificationResult;
+import com.edu.springboot.application.member.dto.SendVerificationResult;
+import com.edu.springboot.domain.captcha.CaptchaAction;
 import com.edu.springboot.domain.mail.MailSender;
 import com.edu.springboot.domain.member.MemberRepository;
 import com.edu.springboot.domain.member.PhoneVerificationPolicy;
-import com.edu.springboot.domain.member.PhoneVerificationStore;
+import com.edu.springboot.domain.member.VerificationStore;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,12 +17,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SendEmailVerificationService {
 
-	private final PhoneVerificationStore phoneVerificationStore;
+	private final VerificationStore phoneVerificationStore;
 	private final PhoneVerificationPolicy phoneVerificationPolicy;
 	private final MemberRepository memberRepository;
 	private final MailSender mailSender;
+	private final VerifyCaptchaService verifyCaptchaService;
+	private final RejectDisposableEmailService rejectDisposableEmailService;
 
-	public SendPhoneVerificationResult send(String rawEmail, String clientIp) {
+	public SendVerificationResult send(String rawEmail, String clientIp, String recaptchaToken, String requestHost) {
+		verifyCaptchaService.require(recaptchaToken, CaptchaAction.EMAIL_SEND_CODE, clientIp, requestHost);
 		try {
 			return doSend(rawEmail, clientIp);
 		} catch (BusinessException ex) {
@@ -30,11 +35,8 @@ public class SendEmailVerificationService {
 		}
 	}
 
-	private SendPhoneVerificationResult doSend(String rawEmail, String clientIp) {
-		String email = normalize(rawEmail);
-		if (!validEmail(email)) {
-			throw new BusinessException("이메일 형식이 올바르지 않습니다.");
-		}
+	private SendVerificationResult doSend(String rawEmail, String clientIp) {
+		String email = rejectDisposableEmailService.requireAllowed(rawEmail);
 		if (memberRepository.existsByEmail(email) || memberRepository.existsByLoginId(email)) {
 			throw new BusinessException("이미 등록된 이메일입니다.");
 		}
@@ -63,7 +65,7 @@ public class SendEmailVerificationService {
 			phoneVerificationPolicy.dailyIpKey(clientIp),
 			phoneVerificationPolicy.ttlUntilMidnight()
 		);
-		return new SendPhoneVerificationResult(
+		return new SendVerificationResult(
 			(int) PhoneVerificationPolicy.COOLDOWN.toSeconds(),
 			(int) PhoneVerificationPolicy.CODE_TTL.toSeconds()
 		);
@@ -73,14 +75,6 @@ public class SendEmailVerificationService {
 		if (phoneVerificationStore.dailyCount(bucketKey) >= PhoneVerificationPolicy.DAILY_LIMIT) {
 			throw new BusinessException(message);
 		}
-	}
-
-	private String normalize(String rawEmail) {
-		return rawEmail == null ? "" : rawEmail.trim().toLowerCase();
-	}
-
-	private boolean validEmail(String email) {
-		return email.contains("@") && email.length() <= 100;
 	}
 
 	static String mailKey(String email) {

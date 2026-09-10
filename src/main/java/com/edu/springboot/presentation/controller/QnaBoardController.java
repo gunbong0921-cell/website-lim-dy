@@ -1,7 +1,5 @@
 package com.edu.springboot.presentation.controller;
 
-import java.time.LocalDateTime;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.edu.springboot.application.board.BoardCookieService;
 import com.edu.springboot.application.board.LikeService;
 import com.edu.springboot.application.board.QnaBoardService;
 import com.edu.springboot.application.board.dto.BoardDetailResponse;
 import com.edu.springboot.application.board.dto.BoardSummaryResponse;
+import com.edu.springboot.application.board.dto.CookieInstruction;
 import com.edu.springboot.application.common.PageResponse;
-import com.edu.springboot.domain.board.ViewCountPolicy;
 import com.edu.springboot.presentation.dto.ApiResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +33,7 @@ public class QnaBoardController {
 
 	private final QnaBoardService qnaBoardService;
 	private final LikeService likeService;
-	private final ViewCountPolicy viewCountPolicy;
+	private final BoardCookieService boardCookieService;
 
 	@GetMapping
 	public ApiResponse<PageResponse<BoardSummaryResponse>> list(
@@ -50,16 +49,13 @@ public class QnaBoardController {
 	@GetMapping("/{id}")
 	public ResponseEntity<ApiResponse<BoardDetailResponse>> read(@PathVariable("id") Long id,
 		@RequestParam(name = "solution", required = false) String solution, HttpServletRequest request) {
-		String cookieName = viewCountPolicy.cookieName("QNA", id);
-		boolean viewed = CookieSupport.has(request, cookieName);
+		CookieInstruction cookie = boardCookieService.viewCookie("QNA", id);
+		boolean viewed = CookieSupport.has(request, cookie.name());
 		BoardDetailResponse detail = qnaBoardService.read(id, solution, viewed);
 		var body = ApiResponse.ok(detail);
 		if (!viewed && detail.visitIncreased()) {
-			ResponseCookie cookie = CookieSupport.viewedToday(
-				cookieName,
-				viewCountPolicy.cookieMaxAgeSeconds(LocalDateTime.now())
-			);
-			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(body);
+			ResponseCookie setCookie = CookieSupport.viewedToday(cookie.name(), cookie.maxAgeSeconds());
+			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, setCookie.toString()).body(body);
 		}
 		return ResponseEntity.ok(body);
 	}

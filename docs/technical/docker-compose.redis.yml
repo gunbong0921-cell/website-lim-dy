@@ -1,0 +1,21 @@
+# Hexaq Redis. 회원·게시글은 Oracle(로컬) / MariaDB(prod)에 둔다.
+# 이 컨테이너는 PHONE_VERIFY: / REQ_TICKET: / ANOMALY: 만 담는다.
+# 앱은 호스트 8282. .env: PHONE_VERIFY_STORE=redis, REDIS_HOST=localhost, REDIS_PORT=6379
+# 실행: docker compose -f docs/technical/docker-compose.redis.yml up -d
+# 확인: docker exec hexaq-redis redis-cli ping
+# 상세: docs/technical/docker-compose.redis.md , docs/technical/04-redis.md
+services:
+  redis:
+    # Redis 6 이상. Alpine이면 이미지가 작다. 클러스터·Sentinel 불필요.
+    image: redis:7-alpine
+    container_name: hexaq-redis
+    # 도커 엔진이 다시 떠도 Redis를 올린다. Spring보다 먼저 살아 있어야 한다.
+    restart: unless-stopped
+    ports:
+      # 127.0.0.1 만. 0.0.0.0:6379 로 바꾸지 않는다.
+      - "127.0.0.1:6379:6379"
+    command:
+      # appendonly no: 재시작 후 코드·티켓 유실 허용. 사용자는 인증번호를 다시 받으면 된다.
+      - redis-server
+      - --appendonly
+      - "no"

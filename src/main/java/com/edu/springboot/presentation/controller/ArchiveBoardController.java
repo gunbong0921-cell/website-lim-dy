@@ -1,6 +1,5 @@
 package com.edu.springboot.presentation.controller;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,12 +19,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.edu.springboot.application.board.ArchiveBoardService;
 import com.edu.springboot.application.board.ArchiveBoardService.UploadFile;
+import com.edu.springboot.application.board.BoardCookieService;
 import com.edu.springboot.application.board.LikeService;
 import com.edu.springboot.application.board.dto.BoardDetailResponse;
 import com.edu.springboot.application.board.dto.BoardSummaryResponse;
+import com.edu.springboot.application.board.dto.CookieInstruction;
 import com.edu.springboot.application.common.BusinessException;
 import com.edu.springboot.application.common.PageResponse;
-import com.edu.springboot.domain.board.ViewCountPolicy;
 import com.edu.springboot.presentation.dto.ApiResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +38,7 @@ public class ArchiveBoardController {
 
 	private final ArchiveBoardService archiveBoardService;
 	private final LikeService likeService;
-	private final ViewCountPolicy viewCountPolicy;
+	private final BoardCookieService boardCookieService;
 
 	@GetMapping
 	public ApiResponse<PageResponse<BoardSummaryResponse>> list(
@@ -52,16 +52,13 @@ public class ArchiveBoardController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<ApiResponse<BoardDetailResponse>> read(@PathVariable("id") Long id, HttpServletRequest request) {
-		String cookieName = viewCountPolicy.cookieName("ARCHIVE", id);
-		boolean viewed = CookieSupport.has(request, cookieName);
+		CookieInstruction cookie = boardCookieService.viewCookie("ARCHIVE", id);
+		boolean viewed = CookieSupport.has(request, cookie.name());
 		BoardDetailResponse detail = archiveBoardService.read(id, viewed);
 		var body = ApiResponse.ok(detail);
 		if (!viewed && detail.visitIncreased()) {
-			ResponseCookie cookie = CookieSupport.viewedToday(
-				cookieName,
-				viewCountPolicy.cookieMaxAgeSeconds(LocalDateTime.now())
-			);
-			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(body);
+			ResponseCookie setCookie = CookieSupport.viewedToday(cookie.name(), cookie.maxAgeSeconds());
+			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, setCookie.toString()).body(body);
 		}
 		return ResponseEntity.ok(body);
 	}

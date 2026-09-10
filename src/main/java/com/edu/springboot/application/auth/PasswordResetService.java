@@ -5,7 +5,9 @@ import java.security.SecureRandom;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.edu.springboot.application.captcha.VerifyCaptchaService;
 import com.edu.springboot.application.common.BusinessException;
+import com.edu.springboot.domain.captcha.CaptchaAction;
 import com.edu.springboot.domain.mail.MailSender;
 import com.edu.springboot.domain.member.Member;
 import com.edu.springboot.domain.member.MemberRepository;
@@ -24,8 +26,11 @@ public class PasswordResetService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncryptor passwordEncryptor;
 	private final MailSender mailSender;
+	private final VerifyCaptchaService verifyCaptchaService;
 
-	public PasswordResetResult sendTemporaryPassword(String email) {
+	public PasswordResetResult sendTemporaryPassword(String email, String recaptchaToken, String clientIp,
+		String requestHost) {
+		verifyCaptchaService.require(recaptchaToken, CaptchaAction.FORGOT_PASSWORD, clientIp, requestHost);
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new BusinessException("해당 이메일로 가입된 계정이 없습니다."));
 		String temp = generate(10);

@@ -3,17 +3,19 @@ import { Link, useNavigate } from 'react-router-dom'
 import SignUpTerms from '../../components/member/SignUpTerms'
 import SignUpTypeTabs from '../../components/member/SignUpTypeTabs'
 import SignUpVerifyTabs from '../../components/member/SignUpVerifyTabs'
+import HoneypotField from '../../components/member/HoneypotField'
 import SocialLoginButtons from '../../components/member/SocialLoginButtons'
 import PageHeader from '../../components/common/PageHeader'
 import { usePhoneVerification } from '../../hooks/usePhoneVerification'
 import { useEmailVerification } from '../../hooks/useEmailVerification'
 import { useSignUp } from '../../hooks/useSignUp'
-import { digitsOnly, formatBusinessNumber, isBusinessNumber, isMobilePhone, isPersonalEmail } from '../../utils/memberForm'
+import { digitsOnly, formatBusinessNumber, isBusinessNumber, isMobilePhone, isPersonalEmail, isValidEmailFormat } from '../../utils/memberForm'
 import { PASSWORD_RULE_TEXT, passwordResetHint } from '../../utils/passwordPolicy'
 
 const empty = {
   memberType: 'INDIVIDUAL',
   email: '',
+  website: '',
   password: '',
   passwordConfirm: '',
   name: '',
@@ -102,6 +104,12 @@ export default function SignUpPage() {
 
   async function onCheckEmail() {
     setError('')
+    if (!isValidEmailFormat(form.email)) {
+      setEmailChecked(false)
+      setEmailAvailable(false)
+      setEmailMessage('이메일 형식이 올바르지 않습니다.')
+      return
+    }
     try {
       const res = await checkEmail(form.email)
       setEmailMessage(res.message)
@@ -303,6 +311,7 @@ export default function SignUpPage() {
             </form>
           ) : (
             <form onSubmit={onSubmit}>
+              <HoneypotField value={form.website} onChange={(value) => setField('website', value)} />
               <SignUpTypeTabs memberType={form.memberType} onChange={selectType} />
               {!corporate && (
                 <div className="hx-social-wrap">
