@@ -15,6 +15,7 @@
 - 일회용 메일: [05-disposable-email.md](../security/05-disposable-email.md)
 - 본인인증: [06-identity-verification.md](../security/06-identity-verification.md)
 - 이상 탐지: [07-anomaly-guard.md](../security/07-anomaly-guard.md)
+- 반응형: [05-responsive.md](./05-responsive.md)
 - 승인된 객체 정리는 [§8](#8-객체-정리-2026-09-10)과 각 기능·보안 md에 적는다. 남은 위반은 보고만 한다.
 
 ---
@@ -410,14 +411,16 @@ App.jsx
   useAuth.bootstrap → memberApi.me → authStore.setMember
 
 pages/          라우트 화면. 훅만 호출
-components/     UI만. SignUpVerifyTabs, HoneypotField, SocialLoginButtons, FileViewer, Header …
-hooks/          useAuth, useSignUp, usePhoneVerification, useEmailVerification,
+components/     UI만. Header(데스크톱), CompactNav(폰·태블릿), FileViewer …
+hooks/          useAuth, useCompactNav, useSignUp, usePhoneVerification, useEmailVerification,
                 useRecaptcha, useBoardList, useBoardDetail, useBoardCommand, useLike, useComment
 services/api/   client.js 가 유일한 fetch. 공개 쓰기 7개는 HMAC 헤더
                 memberApi / boardApi / commentApi / publicApi
 store/          authStore.js
 utils/          getFileType, memberForm, passwordPolicy, requestSignature
 ```
+
+`Layout`이 `useCompactNav`로 Header를 빼고 CompactNav를 둔다. 상세는 [05 반응형](./05-responsive.md).
 
 `useBoardCommand`는 게시판 타입별 API를 맵으로 고른다 (`writeByType`, `updateByType`). 페이지가 `boardApi`를 import하지 않는다.
 
@@ -485,6 +488,7 @@ DB·메일·OAuth·SMS 키는 `.env`에서 읽고, Application/Domain은 파일 
 | 추가 | 설정 | `application-tunnel.properties`, `scripts/cloudflare-tunnel.ps1` | 로컬 HTTPS 공개. 포워드 헤더·OAuth `{baseUrl}` |
 | 변경 | Infrastructure | `WebCorsConfig` | `allowedOriginPatterns` + Security `CorsConfigurationSource` |
 | 프론트 | Vite | `same-origin-assets` | 같은 출처 JS·CSS `crossorigin` 제거. 터널 흰 화면 방지 |
+| 추가 | 프론트 | `useCompactNav`, `CompactNav`, `hexaq-compact.css` | 1180px 이하 햄버거. Header 로고는 컴팩트 DOM에 없음 |
 
 남은 손볼 순서:
 

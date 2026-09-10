@@ -9,8 +9,8 @@ alwaysApply: false
 ```
 frontend-react/src
  ├─ pages/          라우트 화면. 조립만, fetch 금지
- ├─ components/     UI. common/, board/FileViewer
- ├─ hooks/          유스케이스 (useAuth, useBoardList, useLike, useViewCount)
+ ├─ components/     UI. common/Header(데스크톱), common/CompactNav(폰·태블릿), board/FileViewer
+ ├─ hooks/          유스케이스 (useAuth, useCompactNav, useBoardList, useLike, useViewCount)
  ├─ services/api/   fetch와 응답 파싱만
  ├─ store/          zustand: 로그인 여부, 사용자, 아이디 저장만
  └─ utils/          getFileType 등
@@ -21,3 +21,5 @@ frontend-react/src
 - `FileViewer`는 렌더만, 타입 판별은 `getFileType.js`. 맵으로 전략 연결 (switch로 타입을 늘리지 않음).
 - 좋아요·조회수 등 부수효과는 전용 hook. `fetch`는 api 레이어에만.
 - zustand에는 전역 상태만. 목록 등 화면 국지 상태는 `useState`.
+- 1180px 이하 내비는 `CompactNav`. `Header`와 한 파일에 두지 않는다. 고정 바에 로고를 넣지 않는다.
+- 컴팩트 CSS는 `hexaq-compact.css`. Landed `main.css`는 덮기만 한다.

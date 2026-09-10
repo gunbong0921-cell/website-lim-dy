@@ -89,9 +89,14 @@ spring.data.redis.repositories.enabled=false
 
 ## 5. Docker
 
-앱(Spring 8282)은 호스트에서 돌리고 Redis만 컨테이너로 띄운다. `.env`는 `REDIS_HOST=localhost`, `REDIS_PORT=6379`, `PHONE_VERIFY_STORE=redis`. 주석이 붙은 Compose 전문은 [docker-compose.redis.md](./docker-compose.redis.md)에 있다. 포트는 `127.0.0.1`만 연다.
+앱(Spring 8282)은 호스트에서 돌리고 Redis만 컨테이너로 띄운다. 실행 파일은 저장소 루트 [docker-compose.redis.yml](../../docker-compose.redis.yml). `.env`는 `REDIS_HOST=localhost`, `REDIS_PORT=6379`, `PHONE_VERIFY_STORE=redis`. 포트는 `127.0.0.1`만 연다.
 
-기동: `docker compose -f docker-compose.redis.yml up -d` 또는 아래 `docker run`. 확인: `docker exec hexaq-redis redis-cli ping` → `PONG`.
+| 계층 | 객체 | 책임 |
+|---|---|---|
+| 컨테이너 | `hexaq-redis` (`redis:7-alpine`) | TTL 키. 클러스터·Sentinel 없음 |
+| 네트워크 | `127.0.0.1:6379` | 같은 PC의 Spring만 접속 |
+
+기동: `docker compose -f docker-compose.redis.yml up -d`. 확인: `docker exec hexaq-redis redis-cli ping` → `PONG`. Compose 없이:
 
 ```powershell
 # Hexaq Redis. 앱은 호스트 8282, 이 컨테이너만 6379.
@@ -101,3 +106,7 @@ docker run -d --name hexaq-redis --restart unless-stopped `
   -p 127.0.0.1:6379:6379 `
   redis:7-alpine
 ```
+
+RDB/AOF는 필수가 아니다(§3). 컨테이너 재시작 뒤에도 키를 남기려면 볼륨과 `--appendonly yes`. 인증 코드·티켓 TTL은 AOF여도 만료되면 사라진다. 회원 원본 백업이 아니다.
+
+하지 않는 것: Spring·Oracle·MariaDB를 이 Compose에 넣지 않는다. 6379를 공개 인터페이스에 매핑하지 않는다. Redis를 회원·게시글·세션·레이트 리밋 버킷 저장소로 쓰지 않는다.

@@ -9,7 +9,7 @@ alwaysApply: false
 
 # 객체지향 (SOLID)
 
-- **SRP**: `FreeBoardService` / `QnaBoardService` / `ArchiveBoardService`를 하나로 합치지 않는다. 댓글은 `CommentService`.
+- **SRP**: `FreeBoardService` / `QnaBoardService` / `ArchiveBoardService`를 하나로 합치지 않는다. 댓글은 `CommentService`. 데스크톱 `Header`와 폰·태블릿 `CompactNav`를 합치지 않는다.
 - **OCP**: 자료실 첨부 타입(img/video/audio/download)은 if/switch 나열이 아니라 전략(`FileTypeClassifier` + 프론트 `FileViewer` 맵). 새 타입은 전략만 추가.
 - **LSP**: 공통 `Board` 계약을 쓸 때 자료실 첨부 필수 때문에 `write()` 시그니처를 깨지 않는다.
 - **ISP**: `MemberRepository`에 가입/로그인/비번재설정을 무리하게 몰지 말고 필요 시 쿼리/커맨드를 분리한다.

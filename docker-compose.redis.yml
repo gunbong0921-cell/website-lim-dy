@@ -3,7 +3,7 @@
 # 앱은 호스트 8282. .env: PHONE_VERIFY_STORE=redis, REDIS_HOST=localhost, REDIS_PORT=6379
 # 실행: docker compose -f docker-compose.redis.yml up -d
 # 확인: docker exec hexaq-redis redis-cli ping
-# 상세: docs/technical/docker-compose.redis.md , docs/technical/04-redis.md
+# 상세: docs/technical/04-redis.md
 services:
   redis:
     # Redis 6 이상. Alpine이면 이미지가 작다. 클러스터·Sentinel 불필요.

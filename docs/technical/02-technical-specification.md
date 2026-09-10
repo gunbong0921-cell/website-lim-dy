@@ -6,7 +6,7 @@
 | 문서 성격 | 현재 구현 기준 기술 사양 |
 | 작성일 | 2026-09-08 |
 | 갱신일 | 2026-09-10 |
-| 관련 문서 | [기술종합](./overview.md), [아키텍처](./01-architecture.md), [기능종합](../features/overview.md), [보안종합](../security/overview.md) |
+| 관련 문서 | [기술종합](./overview.md), [아키텍처](./01-architecture.md), [반응형](./05-responsive.md), [기능종합](../features/overview.md), [보안종합](../security/overview.md) |
 
 이 문서는 **무엇을 어떤 조건으로 제공하는지**를 적는다. 객체 연결과 규칙 점검은 [아키텍처](./01-architecture.md), 기능별 발표 요약은 [기능종합](../features/overview.md)을 본다.
 
@@ -173,7 +173,7 @@ React Router 기준. Spring `SpaController`가 동일 경로를 `index.html`로 
 | `/board/qna/:solution` · 쓰기·상세·수정 | 쓰기는 로그인 | QnA |
 | `/board/archive` · `/write` · `/:id` · `/:id/edit` | 쓰기는 로그인 | 자료실 |
 
-`/board/qna`는 `/board/qna/general`로 보낸다.
+`/board/qna`는 `/board/qna/general`로 보낸다. 1180px 이하 내비는 [05 반응형](./05-responsive.md).
 
 ---
 
@@ -428,4 +428,5 @@ Application은 포트만 본다. 구현은 Infrastructure다.
 | [본인인증](../security/06-identity-verification.md) | 이메일 DI. 소유 확인은 이메일 또는 휴대폰 6자리 |
 | [이상 탐지](../security/07-anomaly-guard.md) | 가입 직후 규칙 기반 이상 탐지 |
 | [Cloudflare Tunnel](./03-cloudflare-tunnel.md) | 로컬 8282 Quick Tunnel 공개 |
+| [반응형](./05-responsive.md) | 폰·태블릿 1180px. Header / CompactNav |
 | `.env.example` | 환경 변수 키 목록 |

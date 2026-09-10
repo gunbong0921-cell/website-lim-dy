@@ -16,8 +16,8 @@
 | 01 | [아키텍처](./01-architecture.md) | 계층·객체 연결, 규칙 준수 점검. 2026-09-10 객체 정리 반영. 남은 위반은 보고만 |
 | 02 | [기술사양서](./02-technical-specification.md) | 무엇을 어떤 조건으로 제공하는지. API·환경·보안 사양 |
 | 03 | [Cloudflare Tunnel](./03-cloudflare-tunnel.md) | Quick Tunnel 공개. CORS·흰 화면·소셜 `{baseUrl}` |
-| 04 | [Redis](./04-redis.md) | 인증 코드·HMAC 티켓·이상 탐지. 구축 근거와 요건 |
-| — | [Redis Docker](./docker-compose.redis.md) | Redis 컨테이너 Compose. `127.0.0.1:6379` |
+| 04 | [Redis](./04-redis.md) | 인증 코드·HMAC 티켓·이상 탐지. 구축 근거와 요건. Compose는 루트 `docker-compose.redis.yml` |
+| 05 | [반응형](./05-responsive.md) | 폰·태블릿 1180px. `useCompactNav` · `CompactNav` · `hexaq-compact.css` |
 
 비밀값 키 목록은 프로젝트 루트 `.env.example`. 값은 `.env`에만 두고 문서에 적지 않는다.
 

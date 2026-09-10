@@ -8,7 +8,7 @@
 | [security/](./security/overview.md) | 7겹 방어와 기술별 상세 | [보안종합](./security/overview.md) |
 | [technical/](./technical/overview.md) | 아키텍처·기술 사양 | [기술종합](./technical/overview.md) |
 
-Cursor 규칙은 `.cursor/rules/`에 있다. 이 폴더의 md와 역할을 섞지 않는다.
+Cursor 규칙은 `.cursor/rules/`에 있다. 이 폴더의 md와 역할을 섞지 않는다. 1~2분 대본은 [발표](./presentation.md).
 
 2026-09-10 객체 정리는 [아키텍처 §8](./technical/01-architecture.md). 같은 날 터널·CORS·소셜 콜백은 [Cloudflare Tunnel](./technical/03-cloudflare-tunnel.md), [04 소셜](./features/04-social-login.md).
 
@@ -54,7 +54,7 @@ Cursor 규칙은 `.cursor/rules/`에 있다. 이 폴더의 md와 역할을 섞�
 | [01 아키텍처](./technical/01-architecture.md) | 계층·객체 연결, 규칙 점검 |
 | [02 기술사양서](./technical/02-technical-specification.md) | API·환경·보안 사양 |
 | [03 Cloudflare Tunnel](./technical/03-cloudflare-tunnel.md) | Quick Tunnel, CORS, 흰 화면, OAuth `{baseUrl}` |
-| [04 Redis](./technical/04-redis.md) | 인증 코드·HMAC 티켓·이상 탐지. 구축 근거와 요건 |
-| [Redis Docker](./technical/docker-compose.redis.md) | Redis 컨테이너 Compose. `127.0.0.1:6379` |
+| [04 Redis](./technical/04-redis.md) | 인증 코드·HMAC 티켓·이상 탐지. 구축 근거와 요건. Compose는 루트 `docker-compose.redis.yml` |
+| [05 반응형](./technical/05-responsive.md) | 폰·태블릿 1180px. `Header` / `CompactNav` |
 
 환경 변수 키만 `.env.example`. 실제 비밀값은 `.env`이며 문서에 적지 않는다.
