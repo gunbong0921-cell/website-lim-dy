@@ -91,7 +91,7 @@ spring.data.redis.repositories.enabled=false
 
 앱(Spring 8282)은 호스트에서 돌리고 Redis만 컨테이너로 띄운다. `.env`는 `REDIS_HOST=localhost`, `REDIS_PORT=6379`, `PHONE_VERIFY_STORE=redis`. 주석이 붙은 Compose 전문은 [docker-compose.redis.md](./docker-compose.redis.md)에 있다. 포트는 `127.0.0.1`만 연다.
 
-기동: `docker compose -f docs/technical/docker-compose.redis.yml up -d` 또는 아래 `docker run`. 확인: `docker exec hexaq-redis redis-cli ping` → `PONG`.
+기동: `docker compose -f docker-compose.redis.yml up -d` 또는 아래 `docker run`. 확인: `docker exec hexaq-redis redis-cli ping` → `PONG`.
 
 ```powershell
 # Hexaq Redis. 앱은 호스트 8282, 이 컨테이너만 6379.

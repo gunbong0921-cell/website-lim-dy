@@ -6,12 +6,12 @@
 | 적용일 | 2026-09-10 |
 | 관련 | [04 Redis](./04-redis.md), [기술사양서](./02-technical-specification.md), [HMAC](../security/01-hmac-request-signing.md), [이상 탐지](../security/07-anomaly-guard.md) |
 
-Spring은 호스트 `8282`에서 실행한다. 이 파일은 Redis만 정의한다. `.env`: `PHONE_VERIFY_STORE=redis`, `REDIS_HOST=localhost`, `REDIS_PORT=6379`. 비밀값은 적지 않는다.
+Spring은 호스트 `8282`에서 실행한다. Compose는 Redis만 정의한다. `.env`: `PHONE_VERIFY_STORE=redis`, `REDIS_HOST=localhost`, `REDIS_PORT=6379`. 비밀값은 적지 않는다.
 
-실행 파일은 같은 내용의 [docker-compose.redis.yml](./docker-compose.redis.yml)이다.
+실행 파일은 저장소 루트의 [docker-compose.redis.yml](../../docker-compose.redis.yml)이다.
 
 ```
-docker compose -f docs/technical/docker-compose.redis.yml up -d
+docker compose -f docker-compose.redis.yml up -d
 docker exec hexaq-redis redis-cli ping
 ```
 
