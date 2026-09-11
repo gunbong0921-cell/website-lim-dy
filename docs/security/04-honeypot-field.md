@@ -4,7 +4,7 @@
 |---|---|
 | 목적 | HTML을 훑어 모든 입력칸을 채우는 단순 봇의 회원가입을 서버 비용 없이 거절 |
 | 적용일 | 2026-09-10 |
-| 관련 문서 | [기술사양서](../technical/02-technical-specification.md), [아키텍처](../technical/01-architecture.md), [기능종합](../features/overview.md), [reCAPTCHA v3](./03-recaptcha-v3.md), [보안종합](./overview.md) |
+| 관련 문서 | [기술사양서](../technical/02-technical-specification.md), [아키텍처](../technical/01-architecture.md), [기능종합](../features/overview.md), [테스트 결과](./test/04-honeypot-field-test-results.md), [reCAPTCHA v3](./03-recaptcha-v3.md), [보안종합](./overview.md) |
 
 사람 눈에는 안 보이는 `website` 칸이다. 값은 이 문서에 비밀을 두지 않는다.
 

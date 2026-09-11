@@ -4,7 +4,7 @@
 |---|---|
 | 목적 | 가입 직후 스크립트가 핵심 API를 연타하는 계정을 Redis 규칙으로 거른다. ML 없음 |
 | 적용일 | 2026-09-10 |
-| 관련 문서 | [보안종합](./overview.md), [본인인증](./06-identity-verification.md), [아키텍처](../technical/01-architecture.md), [기술사양서](../technical/02-technical-specification.md) |
+| 관련 문서 | [보안종합](./overview.md), [테스트 결과](./test/07-anomaly-guard-test-results.md), [본인인증](./06-identity-verification.md), [아키텍처](../technical/01-architecture.md), [기술사양서](../technical/02-technical-specification.md) |
 
 7단계 중 **7. Post-Registration**. 쿠폰·크레딧·온보딩 화면은 없다. Hexaq에서 **핵심 자원 API**는 로그인 회원의 게시글·댓글·좋아요 쓰기(POST/PUT/DELETE)다. 비회원 자유게시판 쓰기는 계정이 없어 이 규칙을 타지 않는다.
 

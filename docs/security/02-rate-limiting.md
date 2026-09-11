@@ -4,7 +4,7 @@
 |---|---|
 | 목적 | 같은 IP의 무차별 연타와 인증 API 폭주를 분당 버킷으로 끊는다 |
 | 적용일 | 2026-09-10 |
-| 관련 문서 | [보안종합](./overview.md), [HMAC](./01-hmac-request-signing.md), [reCAPTCHA v3](./03-recaptcha-v3.md), [아키텍처](../technical/01-architecture.md), [기술사양서](../technical/02-technical-specification.md) |
+| 관련 문서 | [보안종합](./overview.md), [테스트 결과](./test/02-rate-limiting-test-results.md), [HMAC](./01-hmac-request-signing.md), [reCAPTCHA v3](./03-recaptcha-v3.md), [아키텍처](../technical/01-architecture.md), [기술사양서](../technical/02-technical-specification.md) |
 
 유료 WAF는 쓰지 않는다. 이 한도는 애플리케이션 필터다. 회선 포화형 디도스는 막지 못한다.
 

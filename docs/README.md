@@ -36,13 +36,13 @@ Cursor 규칙은 `.cursor/rules/`에 있다. 이 폴더의 md와 역할을 섞�
 | 문서 | 한 줄 |
 |---|---|
 | [보안종합](./security/overview.md) | 7겹 방어, 시너지, 잔여 리스크 |
-| [01 HMAC](./security/01-hmac-request-signing.md) | 일회용 티켓 서명 |
-| [02 레이트 리밋](./security/02-rate-limiting.md) | IP+경로 분당 한도 |
-| [03 reCAPTCHA v3](./security/03-recaptcha-v3.md) | 점수 기반 봇 차단. SMS 전 게이트 |
-| [04 허니팟](./security/04-honeypot-field.md) | 가입 `website` 필드 |
-| [05 일회용 메일](./security/05-disposable-email.md) | 도메인 블랙리스트, DB 전 |
-| [06 본인인증](./security/06-identity-verification.md) | 이메일 DI. 소유 확인은 이메일 또는 휴대폰 6자리 |
-| [07 이상 탐지](./security/07-anomaly-guard.md) | 가입 직후 TTFA·시퀀스 |
+| [01 HMAC](./security/01-hmac-request-signing.md) | 일회용 티켓 서명. [테스트 결과](./security/test/01-hmac-request-signing-test-results.md) |
+| [02 레이트 리밋](./security/02-rate-limiting.md) | IP+경로 분당 한도. [테스트 결과](./security/test/02-rate-limiting-test-results.md) |
+| [03 reCAPTCHA v3](./security/03-recaptcha-v3.md) | 점수 기반 봇 차단. SMS 전 게이트. [테스트 결과](./security/test/03-recaptcha-v3-test-results.md) |
+| [04 허니팟](./security/04-honeypot-field.md) | 가입 `website` 필드. [테스트 결과](./security/test/04-honeypot-field-test-results.md) |
+| [05 일회용 메일](./security/05-disposable-email.md) | 도메인 블랙리스트, DB 전. [테스트 결과](./security/test/05-disposable-email-test-results.md) |
+| [06 본인인증](./security/06-identity-verification.md) | 이메일 DI. 소유 확인은 이메일 또는 휴대폰 6자리. [테스트 결과](./security/test/06-identity-verification-test-results.md) |
+| [07 이상 탐지](./security/07-anomaly-guard.md) | 가입 직후 TTFA·시퀀스. [테스트 결과](./security/test/07-anomaly-guard-test-results.md) |
 
 ---
 

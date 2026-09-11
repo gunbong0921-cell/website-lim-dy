@@ -4,7 +4,7 @@
 |---|---|
 | 목적 | 이메일을 DI(중복가입확인정보)로 써서 1메일 1계정을 DB에서 강제한다. 가입 전 소유 확인은 이메일 또는 휴대폰 6자리 |
 | 적용일 | 2026-09-10 |
-| 관련 문서 | [보안종합](./overview.md), [일회용 메일](./05-disposable-email.md), [reCAPTCHA v3](./03-recaptcha-v3.md), [이상 탐지](./07-anomaly-guard.md), [기능 01](../features/01-signup-verification.md) |
+| 관련 문서 | [보안종합](./overview.md), [테스트 결과](./test/06-identity-verification-test-results.md), [일회용 메일](./05-disposable-email.md), [reCAPTCHA v3](./03-recaptcha-v3.md), [이상 탐지](./07-anomaly-guard.md), [기능 01](../features/01-signup-verification.md) |
 
 7단계 중 **6. Identity Verification**. PASS/NICE 통신사 API는 쓰지 않는다. `DI`에 해당하는 키는 **이메일**이다. 값은 이 문서에 적지 않는다.
 

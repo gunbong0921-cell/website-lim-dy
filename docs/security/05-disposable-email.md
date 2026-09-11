@@ -4,7 +4,7 @@
 |---|---|
 | 목적 | Temp-mail·Guerrilla Mail 등 일회용 도메인으로 대량 가입·메일 인증 연타를 DB 조회 전에 거절 |
 | 적용일 | 2026-09-10 |
-| 관련 문서 | [보안종합](./overview.md), [본인인증](./06-identity-verification.md), [아키텍처](../technical/01-architecture.md), [기술사양서](../technical/02-technical-specification.md) |
+| 관련 문서 | [보안종합](./overview.md), [테스트 결과](./test/05-disposable-email-test-results.md), [본인인증](./06-identity-verification.md), [아키텍처](../technical/01-architecture.md), [기술사양서](../technical/02-technical-specification.md) |
 
 목록 파일은 클래스패스에 둔다. 런타임에 GitHub를 치지 않는다.
 

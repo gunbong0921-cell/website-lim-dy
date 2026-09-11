@@ -4,7 +4,7 @@
 |---|---|
 | 목적 | API URL만 알고 Postman·cURL·스크립트로 공개 쓰기 엔드포인트를 직접 치는 호출을 거절 |
 | 적용일 | 2026-09-10 |
-| 관련 문서 | [보안종합](./overview.md), [레이트 리밋](./02-rate-limiting.md), [reCAPTCHA v3](./03-recaptcha-v3.md), [아키텍처](../technical/01-architecture.md), [기술사양서](../technical/02-technical-specification.md) |
+| 관련 문서 | [보안종합](./overview.md), [테스트 결과](./test/01-hmac-request-signing-test-results.md), [레이트 리밋](./02-rate-limiting.md), [reCAPTCHA v3](./03-recaptcha-v3.md), [아키텍처](../technical/01-architecture.md), [기술사양서](../technical/02-technical-specification.md) |
 
 프론트 번들에 HMAC 비밀키를 굽지 않는다. 값은 이 문서에 적지 않는다.
 

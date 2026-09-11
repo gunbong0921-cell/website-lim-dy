@@ -4,7 +4,7 @@
 |---|---|
 | 목적 | 봇·스팸·자동화 요청을 점수 기반으로 사전 차단 |
 | 적용일 | 2026-09-10 |
-| 관련 문서 | [보안종합](./overview.md), [레이트 리밋](./02-rate-limiting.md), [허니팟](./04-honeypot-field.md), [일회용 메일](./05-disposable-email.md), [HMAC](./01-hmac-request-signing.md), [본인인증](./06-identity-verification.md), [이상 탐지](./07-anomaly-guard.md), [아키텍처](../technical/01-architecture.md) |
+| 관련 문서 | [보안종합](./overview.md), [테스트 결과](./test/03-recaptcha-v3-test-results.md), [레이트 리밋](./02-rate-limiting.md), [허니팟](./04-honeypot-field.md), [일회용 메일](./05-disposable-email.md), [HMAC](./01-hmac-request-signing.md), [본인인증](./06-identity-verification.md), [이상 탐지](./07-anomaly-guard.md), [아키텍처](../technical/01-architecture.md) |
 
 사이트 키는 프론트에 내려도 된다. 비밀 키는 `.env`에만 둔다. 값은 이 문서에 적지 않는다.
 
